@@ -1,0 +1,146 @@
+{
+  "repository": "https://github.com/ValentinMoraine/Worldwide-Weather-Watcher.git",
+  "branch": "main",
+  "commit": "3c8fff4c410b22ee1b4ad279ee3a28e06ad8ae67",
+  "verified": "2026-10-18",
+  "original_files": [
+    {
+      "path": ".gitignore",
+      "upstream_sha256": "67cca8c6c85c4698d0b5592a07a40ef2c16e9270cbe2773c6798944272525125",
+      "integrated_sha256": "2c4dc14067c2d52505321dff6d8737d0410220317cc45860a4c595011360a375",
+      "state": "adapted"
+    },
+    {
+      "path": ".vscode/extensions.json",
+      "upstream_sha256": "9e13635c45be00e116fddce6e2c47df9f0e54501d08f886aaf1aa926b4382a8d",
+      "integrated_sha256": "9e13635c45be00e116fddce6e2c47df9f0e54501d08f886aaf1aa926b4382a8d",
+      "state": "unchanged"
+    },
+    {
+      "path": "include/board_pins.h",
+      "upstream_sha256": "f0e2157a857abbdb7254bf567450e241a1fe9ffbcc8176656c134a7aa28ba90d",
+      "integrated_sha256": "6471bd89255eb34baa2d9613b8e092448bfe4a29416ada76333b48296e93103d",
+      "state": "adapted"
+    },
+    {
+      "path": "include/cesi_types.h",
+      "upstream_sha256": "5e58f5e2cada34c6734adebaa9f18ddd077b2b28c57492064e767dab07868459",
+      "integrated_sha256": "5e58f5e2cada34c6734adebaa9f18ddd077b2b28c57492064e767dab07868459",
+      "state": "unchanged"
+    },
+    {
+      "path": "include/setup.h",
+      "upstream_sha256": "9c17055623ba92276881d6f6e3b84263c27277c24d1294caee1ece7ca8a4ba02",
+      "integrated_sha256": "9c17055623ba92276881d6f6e3b84263c27277c24d1294caee1ece7ca8a4ba02",
+      "state": "unchanged"
+    },
+    {
+      "path": "lib/cesi_grove/include/grove_bme680.h",
+      "upstream_sha256": "0686f0042c8241c9d6704e8ffbb9fe2577b3aded25217ad66723bc52b6bbc3f0",
+      "integrated_sha256": "0686f0042c8241c9d6704e8ffbb9fe2577b3aded25217ad66723bc52b6bbc3f0",
+      "state": "unchanged"
+    },
+    {
+      "path": "lib/cesi_grove/include/grove_button.h",
+      "upstream_sha256": "02b24a691819f64b12582bf116141ca9757ac2fdf83627f6c96219b72a4e3c7e",
+      "integrated_sha256": "02b24a691819f64b12582bf116141ca9757ac2fdf83627f6c96219b72a4e3c7e",
+      "state": "unchanged"
+    },
+    {
+      "path": "lib/cesi_grove/include/grove_gps_air530z.h",
+      "upstream_sha256": "c2e511b0149835a5564ad562489d9c899c0ceda6ebb791a87632a56d3668db85",
+      "integrated_sha256": "05e25ab5c04c608d5750f09f1dab85dc0182f5158dd9416e93118be3872b27d8",
+      "state": "adapted"
+    },
+    {
+      "path": "lib/cesi_grove/include/grove_light.h",
+      "upstream_sha256": "bbd158b4f74e428dbd2f47e0d9ff33c52e13f2afaacff1bc4b3da03b7323de4b",
+      "integrated_sha256": "bbd158b4f74e428dbd2f47e0d9ff33c52e13f2afaacff1bc4b3da03b7323de4b",
+      "state": "unchanged"
+    },
+    {
+      "path": "lib/cesi_grove/include/grove_rgb.h",
+      "upstream_sha256": "43dd4c50b56177ce50eb0fecae3a59676db249efde38cdaef13c846267e47e5a",
+      "integrated_sha256": "43dd4c50b56177ce50eb0fecae3a59676db249efde38cdaef13c846267e47e5a",
+      "state": "unchanged"
+    },
+    {
+      "path": "lib/cesi_grove/include/grove_rtc_ds1307.h",
+      "upstream_sha256": "7f342e8d650d24d16d3a417148ed3097b27ddb57b2291519de2e146e0eacdc93",
+      "integrated_sha256": "7f342e8d650d24d16d3a417148ed3097b27ddb57b2291519de2e146e0eacdc93",
+      "state": "unchanged"
+    },
+    {
+      "path": "lib/cesi_grove/include/sd_logger.h",
+      "upstream_sha256": "82fb64c44e7df8f89f985006418298efaa82e79839ef946b2ecd3ce2baed6757",
+      "integrated_sha256": "82fb64c44e7df8f89f985006418298efaa82e79839ef946b2ecd3ce2baed6757",
+      "state": "unchanged"
+    },
+    {
+      "path": "lib/cesi_grove/src/grove_bme680.c",
+      "upstream_sha256": "ee234f8c92ef12f5ca46f6bb014254ce57314ef74a7127957ea2077aeb85ac94",
+      "integrated_sha256": "2335be5b9b179c55a54fccf800e8d4949c8d1b85f272722a4bf38250cf7d67f7",
+      "state": "adapted"
+    },
+    {
+      "path": "lib/cesi_grove/src/grove_button.c",
+      "upstream_sha256": "64385f41d2f4aba79f4831589aa37f978c4bdbcddb99371f3de83ead52ed266e",
+      "integrated_sha256": "0e37dc2d55892a2677fa9787d428677a0a180b7fc902300da0961a686e91067a",
+      "state": "adapted"
+    },
+    {
+      "path": "lib/cesi_grove/src/grove_gps_air530z.c",
+      "upstream_sha256": "38299e4dc91e95df0cb2dd08b2e5f7f5b9943af33076a92c3b4c831de9ad44b2",
+      "integrated_sha256": "91f2cf9f182e8e1a6255075cef0be15f938373526350f9124d5cb8ecb5d4b865",
+      "state": "adapted"
+    },
+    {
+      "path": "lib/cesi_grove/src/grove_light.c",
+      "upstream_sha256": "5e4bbdcd075b523643f375f263ab7b9fbb676519babe23347726f67d11504a37",
+      "integrated_sha256": "7d9a24b9b3945e9385a5197035300b8a2cebafdb838ac0dee7dc95803d32b774",
+      "state": "adapted"
+    },
+    {
+      "path": "lib/cesi_grove/src/grove_rgb.c",
+      "upstream_sha256": "1c3e958afe03278c83037cdf4f7c2d8efdb2f1100c03a44b46d5d704f3d0430d",
+      "integrated_sha256": "1c3e958afe03278c83037cdf4f7c2d8efdb2f1100c03a44b46d5d704f3d0430d",
+      "state": "unchanged"
+    },
+    {
+      "path": "lib/cesi_grove/src/grove_rtc_ds1307.c",
+      "upstream_sha256": "0d6458a8a3e1975b2f1b48b9390354f70ff679b764447bc702bc8accdcd30d22",
+      "integrated_sha256": "9472d804a3e64a8f360e7e4422f0bd8c0ae6bc5e71e454f13930b8d754cc89b2",
+      "state": "adapted"
+    },
+    {
+      "path": "lib/cesi_grove/src/sd_logger.c",
+      "upstream_sha256": "f91ac781bfae160f6f1ba4f62696427a8108d1dfe61ed2a0384e85bcc3514aa7",
+      "integrated_sha256": "421a650890c95851d705d9e2beae1eec94d4a07fe9d39aa6cb0d801b4af23897",
+      "state": "adapted"
+    },
+    {
+      "path": "lib/library.json",
+      "upstream_sha256": "011ec23350e43734903ee0302d718743742e1c5f1e025f2cdd20750884aae153",
+      "integrated_sha256": "011ec23350e43734903ee0302d718743742e1c5f1e025f2cdd20750884aae153",
+      "state": "unchanged"
+    },
+    {
+      "path": "platformio.ini",
+      "upstream_sha256": "41ddc9c01115543886b148ec6d767327ffd985d7155ca866cff252415ee8f4b3",
+      "integrated_sha256": "83365f2f16129cbdf17a6efb5724b2b42a5839f8d6ce75a02843e1d7aa6101d8",
+      "state": "adapted"
+    },
+    {
+      "path": "src/main.c",
+      "upstream_sha256": "9a38f7423b57ed7abe4fabbec86ffeaf814a7cb2dd551b01774df02e40c443b6",
+      "integrated_sha256": "b56c1ea925c2909f0f35d228b9b91467d2afab881333b194bc07df0704ae8dff",
+      "state": "adapted"
+    },
+    {
+      "path": "src/setup.c",
+      "upstream_sha256": "652f5c6be9c05242ab5161c170b3e4d65faf0897b8d61a3a276ff34c7c0953bd",
+      "integrated_sha256": "bab11136d4b8f29256b8a657c4d5f11e465a7c3bd4fc5e7df220cd9ccc38b308",
+      "state": "adapted"
+    }
+  ]
+}
