@@ -396,8 +396,33 @@ static void finish_cycle(uint32_t now) {
         errors |= ERR_SENSOR_INVALID;
     if (mode == MODE_MAINTENANCE) {
         char line[256];
-        if (Measurement_Format(&measurement, line, sizeof(line)) >= 0)
-            output(line);
+        /* Affichage lisible reserve a la console de maintenance. */
+        if (Measurement_Format(&measurement, line, sizeof(line)) >= 0) {
+            char *fields[8];
+            unsigned count = 1;
+            fields[0] = line;
+            line[strcspn(line, "\r\n")] = '\0';
+            for (char *p = line; *p; p++) {
+                if (*p == ';') {
+                    *p = '\0';
+                    if (count < 8)
+                        fields[count++] = p + 1;
+                }
+            }
+            if (count == 8) {
+                printf("\r\n"
+                       "Date / heure : %s\r\n"
+                       "Mode         : %s\r\n"
+                       "Temperature  : %s deg C\r\n"
+                       "Humidite     : %s %%\r\n"
+                       "Pression     : %s hPa\r\n"
+                       "Luminosite   : %s / 1023\r\n"
+                       "Latitude     : %s\r\n"
+                       "Longitude    : %s\r\n\r\n",
+                       fields[0], fields[1], fields[2], fields[3],
+                       fields[4], fields[5], fields[6], fields[7]);
+            }
+        }
         next_cycle = now + 1000;
     } else {
         sd_error = Storage_Write(&measurement, cfg.file_max);

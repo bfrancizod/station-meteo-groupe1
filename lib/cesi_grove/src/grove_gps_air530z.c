@@ -1,3 +1,4 @@
+#define GPS_DIAG_ENABLED 0
 /* NMEA GGA : checksum, champs vides conservés et coordonnées vérifiées.
  * Compatible GP/GN et autres talkers ; aucune position périmée n'est publiée. */
 #include "grove_gps_air530z.h"
@@ -103,7 +104,7 @@ void GroveGPS_Process(void) {
     /* GPS_DIAG_TEMP */
     static uint32_t diag_bytes, diag_tick;
     uint32_t now = HAL_GetTick();
-    if (now - diag_tick >= 5000) {
+    if (GPS_DIAG_ENABLED && now - diag_tick >= 5000) {
         diag_tick = now;
         printf("[GPS diag] octets=%lu phrases=%lu derniere=%.100s\r\n",
                (unsigned long)diag_bytes,
