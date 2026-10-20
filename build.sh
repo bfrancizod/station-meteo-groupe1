@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Rôle : Lance la compilation, les tests, le téléversement ou la console selon l'option choisie.
 # Utilisation : ./build.sh build|upload|monitor|test|direct
 set -euo pipefail
 cd -- "$(dirname -- "$0")"

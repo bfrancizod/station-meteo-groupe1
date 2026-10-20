@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# Rôle : Compile le programme ARM avec les outils locaux, sans lancer PlatformIO.
 """Compilation ARM locale sans lancer PlatformIO ni service distant.
 SDK_STM32L4 : dossier STM32CubeL4 (Drivers/...), ARM_GCC : chemin gcc facultatif.
 Les dépendances sont découvertes dans ~/.platformio/packages si disponibles.

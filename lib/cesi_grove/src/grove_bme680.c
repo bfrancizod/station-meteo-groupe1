@@ -1,3 +1,4 @@
+// Rôle : Identifie le BME680 hérité sans produire de mesures sur la maquette actuelle.
 // Pilote hérité conservé pour la base pédagogique ; le cycle actuel utilise le BME280.
 // Seule l'identification I2C est disponible ici ; aucune mesure BME680 n'est produite.
 #include "grove_bme680.h"
@@ -34,7 +35,7 @@ bool GroveBME680_ReadChipId(uint8_t *chip_id)
 bool GroveBME680_Init(void)
 {
     /*
-     * BME680 standard chip ID = 0x61.
+     * Identifiant habituel de la puce BME680 : 0x61.
      * Adresse Seeed : 0x76 par défaut, parfois 0x77.
      */
     uint8_t id = 0;

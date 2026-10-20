@@ -1,5 +1,6 @@
+// Rôle : Définit les types partagés pour les modes, les réglages, les mesures et les erreurs.
 // Types communs de l'application, sans dépendance matérielle : app.c, services et tests PC.
-// Une structure regroupe les champs d'un objet ; une enum donne des noms à des valeurs entières.
+// Une structure regroupe les champs d'un objet ; une énumération donne des noms à des valeurs entières.
 #ifndef APP_TYPES_H
 #define APP_TYPES_H
 #include <stdbool.h>
@@ -33,14 +34,15 @@ typedef struct {
     uint16_t year;
     uint8_t month, day, hour, minute, second, weekday;
 } DateTime;
-// Coordonnées en degrés décimaux, signées (sud/ouest négatifs), et informations de fix GGA.
+// Coordonnées en degrés décimaux, signées (sud/ouest négatifs),
+// avec les informations sur la validité de la position GGA.
 typedef struct {
     double lat, lon;
     uint8_t quality, satellites;
 } GpsFix;
 // Réglages persistés en Flash : interval_min en minutes, timeout_s en secondes,
 // file_max en octets ; activations 0/1 ; luminosité 0..1023 ; seuils en °C et hPa.
-// Les seuils lumin_low/high sont configurables mais le cycle actuel publie la valeur brute réduite.
+// Les seuils lumin_low/lumin_high sont configurables ; le cycle publie la valeur brute réduite.
 typedef struct {
     uint16_t interval_min, timeout_s;
     uint32_t file_max;

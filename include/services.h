@@ -1,3 +1,4 @@
+// Rôle : Déclare les services de configuration, d'acquisition, de stockage et de supervision.
 // Contrats entre app.c et les modules de src : configuration, temps, capteurs et stockage.
 // Les pointeurs de sortie désignent des objets fournis par l'appelant ; pas d'allocation ici.
 #ifndef SERVICES_H
@@ -25,7 +26,8 @@ bool Env_Init(void);
 bool Env_Begin(void);
 bool Env_Read(float *t, float *h, float *p);
 // Process ne prend que les octets déjà disponibles ; Reset invalide et vide l'ancien flux.
-// Take exige un fix reçu depuis since (ms HAL), âgé d'au plus 2 s ; Parse valide une GGA texte.
+// Take exige une position valide reçue depuis since (ms HAL) et datant d'au plus 2 s.
+// Parse valide une phrase GGA sous forme de texte.
 void Gps_Process(void);
 bool Gps_Take(uint32_t since, GpsFix *out);
 bool Gps_Parse(const char *line, GpsFix *out);

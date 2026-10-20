@@ -1,5 +1,6 @@
+// Rôle : Initialise le STM32 et gère les communications matérielles et les interruptions UART.
 // Couche carte : configure les périphériques STM32 puis fournit les E/S de board.h.
-// main.c appelle Global_Init ; les IRQ remplissent des buffers consommés par app.c et le GPS.
+// main.c appelle Global_Init ; les IRQ remplissent des tampons consommés par app.c et le GPS.
 /* Initialisation Nucleo et E/S. Les IRQ ne font que déplacer des octets. */
 #include "setup.h"
 #include "board.h"
@@ -9,12 +10,12 @@
 #include "services.h"
 #include <string.h>
 #include <stdio.h>
-// Les handles sont des structures HAL décrivant les périphériques ; board.h les déclare extern.
+// Les descripteurs sont des structures HAL décrivant les périphériques ; board.h les déclare extern.
 I2C_HandleTypeDef hi2c1;
 SPI_HandleTypeDef hspi1;
 UART_HandleTypeDef huart2, huart4;
 #define RING_SIZE 1024u
-// Buffer circulaire : head pointe la prochaine écriture, tail la prochaine lecture.
+// Tampon circulaire : head pointe la prochaine écriture, tail la prochaine lecture.
 // uint8_t = entier non signé sur 8 bits (un octet) ; uint16_t sur 16 bits pour les indices.
 // Une case reste libre pour distinguer plein et vide : capacité utile = 1023 octets.
 typedef struct {
@@ -26,7 +27,7 @@ typedef struct {
 static Ring console_rx, gps_rx, console_tx;
 // Le nom historique rx_lost inclut aussi les abandons TX et certaines erreurs UART.
 static volatile uint32_t rx_lost;
-// Ajoute v au buffer pointé par r ; si plein, perd le nouvel octet et compte cette perte.
+// Ajoute v au tampon pointé par r ; si plein, perd le nouvel octet et compte cette perte.
 // Appelée par les IRQ RX ou sous protection des interruptions pour l'émission console.
 static void put(Ring *r, uint8_t v) {
     uint16_t n = (r->head + 1u) % RING_SIZE;
@@ -51,7 +52,7 @@ void SysTick_Handler(void) {
     HAL_IncTick();
 }
 /* Interruption courte : déplacer les octets et effacer les erreurs, sans décodage ni accès SD. */
-// h désigne l'UART, rx son buffer de réception, tx autorise le traitement d'émission.
+// h désigne l'UART, rx son tampon de réception, tx autorise le traitement d'émission.
 // -> accède aux registres du périphérique ; & teste les bits d'état et | combine les masques.
 static void irq(UART_HandleTypeDef *h, Ring *rx, bool tx) {
     USART_TypeDef *u = h->Instance;
@@ -64,7 +65,7 @@ static void irq(UART_HandleTypeDef *h, Ring *rx, bool tx) {
         rx_lost++;
     }
     // TXE signifie que TDR peut accepter un octet, pas que toute la chaîne a été envoyée.
-    // Quand le buffer est vide, couper TXEIE évite des interruptions inutiles en continu.
+    // Quand le tampon est vide, couper TXEIE évite des interruptions inutiles en continu.
     if (tx && (s & USART_ISR_TXE) && (u->CR1 & USART_CR1_TXEIE)) {
         int c = get(&console_tx);
         if (c < 0)
@@ -93,7 +94,7 @@ int Board_GpsGet(void) {
 uint32_t Board_RxOverflows(void) {
     return rx_lost;
 }
-// Copie la chaîne s dans le buffer TX ; les interruptions assureront son émission.
+// Copie la chaîne s dans le tampon TX ; les interruptions assureront son émission.
 void Board_ConsoleWrite(const char *s) {
     /* Ne jamais attendre le terminal : une sortie saturée est abandonnée. */
     while (*s) {
@@ -120,7 +121,7 @@ bool Board_Green(void) {
     return RED_IS_BUTTON1 ? GroveButton2_IsPressed() : GroveButton1_IsPressed();
 }
 // fast choisit le diviseur SPI : lent pendant l'initialisation SD, plus rapide ensuite.
-// Le périphérique est désactivé avant de modifier seulement les bits du prescaler.
+// Le périphérique est désactivé avant de modifier seulement les bits du prédiviseur.
 void Board_SpiSpeed(bool fast) {
     __HAL_SPI_DISABLE(&hspi1);
     MODIFY_REG(hspi1.Instance->CR1, SPI_CR1_BR,
@@ -131,9 +132,9 @@ void Board_SpiSpeed(bool fast) {
 uint16_t Board_Light(void) {
     return GroveLight_ReadRaw();
 }
-/* Retarget printf conservé de setup.c, désormais avec émission tamponnée. */
+/* Redirection de printf conservée de setup.c, désormais avec émission tamponnée. */
 // Adaptateur appelé par printf/newlib : ptr contient len octets, sans exigence de '\0'.
-// Renvoie len même si le buffer a saturé ; ce retour n'est pas un accusé de réception du PC.
+// Renvoie len même si le tampon a saturé ; ce retour n'est pas un accusé de réception du PC.
 int _write(int file, char *ptr, int len) {
     (void)file;
     for (int i = 0; i < len; i++) {
@@ -145,7 +146,7 @@ int _write(int file, char *ptr, int len) {
     }
     return len;
 }
-// Configure le handle h pour instance à baud bits/s, en 8 bits sans parité et un bit d'arrêt.
+// Configure le descripteur h pour instance à baud bits/s, en 8 bits sans parité et un bit d'arrêt.
 // Active la réception par interruption ; une erreur HAL d'initialisation arrête cette boucle.
 static void uart_init(UART_HandleTypeDef *h, USART_TypeDef *instance, uint32_t baud) {
     h->Instance = instance;

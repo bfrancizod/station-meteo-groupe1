@@ -1,3 +1,4 @@
+// Rôle : Traduit les accès aux secteurs demandés par FatFs en échanges SD sur SPI.
 // Adaptation de l'interface disque FatFs aux commandes SD sur SPI1.
 // storage.c manipule des fichiers ; ce fichier ne connaît que des secteurs et des octets.
 // L'initialisation s'appuie sur sd_logger.c et les broches/vitesses sur setup.c.
@@ -27,7 +28,8 @@ static void release(void) {
     HAL_GPIO_WritePin(SD_CS_PORT, SD_CS_PIN, GPIO_PIN_SET);
     byte(0xff);
 }
-// Attend au plus timeout millisecondes que la carte rende 0xff, tout en servant le fond.
+// Attend que la carte rende 0xff, dans la limite du délai fourni en millisecondes.
+// Les tâches de fond restent servies pendant cette attente.
 // La fonction reste synchrone : Board_Pump rend des services mais ne quitte pas cette attente.
 static bool ready(uint32_t timeout) {
     uint32_t start = HAL_GetTick();
@@ -215,7 +217,7 @@ DRESULT disk_ioctl(BYTE drive, BYTE cmd, void *buff) {
         return RES_PARERR;
     }
 }
-// Callback FatFs : compacte la date RTC dans 32 bits, avec une résolution de deux secondes.
+// Fonction de rappel FatFs : compacte la date RTC dans 32 bits, avec une résolution de deux secondes.
 // Renvoie zéro si la RTC est invalide ; l'horodatage du contenu du journal reste dans Measurement.
 DWORD get_fattime(void) {
     DateTime d;

@@ -1,3 +1,4 @@
+// Rôle : Commande la couleur de la LED RVB avec le protocole P9813.
 #include "grove_rgb.h"
 #include "board_pins.h"
 
@@ -28,8 +29,8 @@ static void GroveRGB_SendByte(uint8_t value)
 static void GroveRGB_SendColor(uint8_t r, uint8_t g, uint8_t b)
 {
     /*
-     * Grove Chainable RGB LED / P9813
-     * Format : prefix + B + G + R
+     * LED RVB Grove chaînable / P9813
+     * Format : préfixe + bleu + vert + rouge
      */
     uint8_t prefix = 0xC0;
 

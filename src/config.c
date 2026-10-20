@@ -1,3 +1,4 @@
+// Rôle : Définit les réglages par défaut, valide leurs valeurs et calcule les empreintes CRC.
 // Paramètres de la station et contrôle de leur cohérence, sans accès au matériel.
 // app.c utilise ces fonctions avant Nv_Save ; nv_store.c utilise aussi le CRC32.
 #include "services.h"
@@ -47,7 +48,7 @@ bool Config_Set(Config *c, const char *key, const char *value) {
     Config n = *c;
 // Les macros construisent la chaîne de tests ci-dessous ; leurs '\' prolongent la ligne.
 // UINT_FIELD exige un entier dans les bornes avant de le ranger dans un type plus petit.
-/* Comparer avant le cast : aucun débordement d'entier accepté. */
+/* Comparer avant la conversion de type : aucun débordement d'entier accepté. */
 #define UINT_FIELD(name, field, lo, hi)                                                            \
     if (!strcmp(key, name)) {                                                                      \
         if (v < (lo) || v > (hi) || floor(v) != v)                                                 \

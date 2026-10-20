@@ -1,11 +1,12 @@
+// Rôle : Transforme une acquisition en ligne de texte pour la carte SD et la console.
 // Sérialisation des mesures : contrat partagé entre storage.c, app.c et le parseur Python.
 // Huit champs séparés par ';' ; l'ordre et les libellés doivent rester compatibles.
 /* Format partagé console/fichier : aucun nombre invalide présenté comme mesure. */
 #include "services.h"
 #include <stdio.h>
 #include <string.h>
-// Lit m sans la modifier et écrit dans le buffer out de size octets, terminateur compris.
-// Renvoie la longueur utile (avec '\n', sans '\0'), ou -1 si le buffer est trop petit.
+// Lit m sans la modifier et écrit dans le tampon out de size octets, terminateur compris.
+// Renvoie la longueur utile (avec '\n', sans '\0'), ou -1 si le tampon est trop petit.
 int Measurement_Format(const Measurement *m, char *out, unsigned size) {
     // NA représente ici toutes les valeurs non OK : absentes, désactivées, ignorées
     // volontairement ou incohérentes. Le texte seul ne permet pas de distinguer ces causes.

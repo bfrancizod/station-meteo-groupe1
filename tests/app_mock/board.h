@@ -1,3 +1,4 @@
+// Rôle : Déclare les remplacements du matériel utilisés par le test de supervision sur PC.
 #ifndef APP_MOCK_BOARD_H
 #define APP_MOCK_BOARD_H
 #include <stdint.h>

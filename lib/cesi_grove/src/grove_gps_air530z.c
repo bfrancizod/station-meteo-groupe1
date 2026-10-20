@@ -1,10 +1,11 @@
+// Rôle : Reconstitue les phrases GPS reçues et valide les positions GGA récentes.
 // Pilote NMEA utilisé pour le SIM28 malgré son nom historique Air530Z.
 // setup.c reçoit les octets en interruption ; ce fichier assemble et valide les GGA,
 // puis src/gps.c transmet les positions à l'acquisition. Une RMC seule n'est pas exploitée.
 // Le diagnostic reste réactivable par cette constante ; aucune commande n'est envoyée au GPS.
 #define GPS_DIAG_ENABLED 0
-/* NMEA GGA : checksum, champs vides conservés et coordonnées vérifiées.
- * Compatible GP/GN et autres talkers ; aucune position périmée n'est publiée. */
+/* NMEA GGA : somme de contrôle, champs vides conservés et coordonnées vérifiées.
+ * Compatible GP/GN et autres identifiants d'émetteur ; aucune position périmée n'est publiée. */
 #include "grove_gps_air530z.h"
 #include <stdio.h>
 #include <math.h>
@@ -22,7 +23,7 @@ static GPS_Data last;
 static char recent_line[128];
 static uint32_t line_sequence;
 #endif
-// Convertit un chiffre hexadécimal de checksum en 0..15 ; -1 signale un caractère invalide.
+// Convertit un chiffre hexadécimal de la somme de contrôle en 0..15 ; -1 signale un caractère invalide.
 static int hex(char c) {
     if (c >= '0' && c <= '9')
         return c - '0';
@@ -59,7 +60,7 @@ static bool coordinate(const char *s, const char *hem, bool lat, double *out) {
 /* Valider toute la trame avant de toucher au résultat ; conserver les champs vides NMEA. */
 // s doit contenir une phrase sans CR/LF, de '$' jusqu'aux deux chiffres après '*'.
 // Fonction indépendante du matériel, appelée dans la boucle et dans les tests PC.
-// Remplit *out uniquement si checksum, type GGA, qualité et coordonnées sont acceptés.
+// Remplit *out uniquement si la somme de contrôle, le type GGA, la qualité et les coordonnées sont acceptés.
 bool GroveGPS_Parse(const char *s, GPS_Data *out) {
     if (!s || !out || *s != '$' || strlen(s) >= 128)
         return false;
@@ -69,7 +70,7 @@ bool GroveGPS_Parse(const char *s, GPS_Data *out) {
     int a = hex(star[1]), b = hex(star[2]);
     if (a < 0 || b < 0)
         return false;
-    // Le checksum NMEA est un XOR des octets entre '$' et '*', exclus.
+    // La somme de contrôle NMEA est un XOR des octets entre '$' et '*', exclus.
     // a << 4 place le premier chiffre hexadécimal dans les quatre bits forts.
     uint8_t crc = 0;
     for (const char *p = s + 1; p < star; p++)
@@ -93,7 +94,7 @@ bool GroveGPS_Parse(const char *s, GPS_Data *out) {
                 f[count++] = p + 1;
         }
     // Les deux premiers caractères identifient l'émetteur (GP, GN...) ; seuls GGA comptent.
-    // Qualité 0 = absence de fix, refusée ici ; le nombre de satellites est contrôlé séparément.
+    // Qualité 0 = absence de position valide, refusée ici ; le nombre de satellites est contrôlé séparément.
     if (count < 8 || strlen(f[0]) != 5 || strcmp(f[0] + 2, "GGA"))
         return false;
     double quality, sats;
@@ -126,9 +127,9 @@ void GroveGPS_Reset(void) {
 }
 // Consomme seulement les octets disponibles ; n'attend pas une position satellite.
 // Appelée hors interruption via App_Background ; le compteur de diagnostic compte aussi
-// les phrases non GGA et les lignes invalides, il ne compte donc pas uniquement les fix.
+// les phrases non GGA et les lignes invalides, il ne compte donc pas uniquement les positions valides.
 void GroveGPS_Process(void) {
-    /* GPS_DIAG_TEMP */
+    /* Diagnostic GPS temporaire */
     static uint32_t diag_bytes, diag_tick;
     uint32_t now = HAL_GetTick();
     if (GPS_DIAG_ENABLED && now - diag_tick >= 5000) {
@@ -218,7 +219,7 @@ bool GroveGPS_ReadLine(char *out, unsigned max_len, unsigned timeout_ms) {
     out[0] = 0;
     return false;
 }
-// Interface bloquante de compatibilité : cherche une GGA récente jusqu'au timeout en ms.
+// Interface bloquante de compatibilité : cherche une GGA récente jusqu'à l'expiration du délai en ms.
 // Sert le fond pendant l'attente ; le cycle normal utilise Process/Take à la place.
 bool GroveGPS_ReadGGA(GPS_Data *out, unsigned timeout_ms) {
     if (!out)

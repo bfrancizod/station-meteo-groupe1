@@ -1,3 +1,4 @@
+// Rôle : Valide le calendrier et relie l'application à l'horloge DS1307.
 // Calendrier applicatif : traduit DateTime vers le RTC_DateTime du pilote DS1307.
 // app.c l'utilise pour les commandes et l'horodatage ; diskio_spi.c pour la date FAT.
 /* DS1307 : calendrier strict ; aucune date fictive injectée au démarrage. */

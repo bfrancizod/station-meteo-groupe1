@@ -1,3 +1,4 @@
+// Rôle : Coordonne les modes, les commandes, les acquisitions et la signalisation de la station.
 // Chef d'orchestre de la station : modes, commandes, acquisition et signalisation.
 // Les services de services.h relient cette logique aux pilotes, à la RTC et à la SD.
 // Les mesures passent ensuite par format.c vers le fichier ou la console de maintenance.
@@ -18,7 +19,7 @@
 static Config cfg;
 static AppMode mode, previous_mode;
 // Échéances et instants en millisecondes ; env_due et light_due permettent de revenir
-// dans la boucle entre deux tentatives au lieu d'attendre toute la durée du timeout.
+// dans la boucle entre deux tentatives sans attendre l'expiration du délai maximal.
 static uint32_t next_cycle, last_activity, cycle_start, env_due, light_due;
 // Masques de défauts : chaque bit représente une cause, plusieurs peuvent coexister.
 static uint32_t errors, sd_error;
@@ -27,10 +28,10 @@ static bool initialized, cycle, env_ok, env_pending, request_gps, force_measure;
 static unsigned economic_cycle;
 static Measurement measurement;
 // Un compteur et deux bits de diagnostic par capteur évitent qu'un capteur rétabli
-// efface l'erreur d'un autre. Deux cycles en timeout déclenchent l'erreur d'accès.
+// efface l'erreur d'un autre. Deux cycles dépassant le délai d'attente déclenchent l'erreur d'accès.
 static uint8_t timeout_count[SENSOR_COUNT];
 static uint8_t sensor_access, sensor_invalid;
-// Buffer de commande : un tableau de caractères terminé par '\0' avant son analyse.
+// Tampon de commande : un tableau de caractères terminé par '\0' avant son analyse.
 // command_used compte les caractères utiles ; une place est réservée au terminateur.
 static char command_line[96];
 static unsigned command_used;
@@ -340,7 +341,7 @@ static void execute(char *line) {
         return;
     }
     // *eq désigne le caractère trouvé ; *eq++ = 0 termine la clé puis avance le pointeur
-    // vers la valeur. Les deux chaînes utilisent le même buffer command_line.
+    // vers la valeur. Les deux chaînes utilisent le même tampon command_line.
     *eq++ = 0;
     if (!strcmp(line, "CLOCK") || !strcmp(line, "DATE") || !strcmp(line, "DAY")) {
         output(rtc_command(line, eq) ? "OK RTC\r\n" : "ERREUR RTC ou format\r\n");
@@ -422,7 +423,7 @@ static void begin_cycle(uint32_t now) {
 }
 /* Mémoriser les défauts par source, lire la RTC en fin de collecte et publier la mesure. */
 // Termine la collecte dans la boucle principale ; now sert à reprogrammer la maintenance.
-// Une valeur incohérente produit immédiatement son défaut ; un timeout doit se répéter.
+// Une valeur incohérente produit immédiatement son défaut ; un dépassement du délai d'attente doit se répéter.
 // La date est lue en fin de collecte : elle ne date pas exactement chaque lecture de capteur.
 static void finish_cycle(uint32_t now) {
     for (unsigned i = 0; i < SENSOR_COUNT; i++) {
@@ -463,7 +464,7 @@ static void finish_cycle(uint32_t now) {
         errors |= ERR_SENSOR_INVALID;
     if (mode == MODE_MAINTENANCE) {
         char line[256];
-        /* Affichage lisible reserve a la console de maintenance. */
+        /* Affichage lisible réservé à la console de maintenance. */
         if (Measurement_Format(&measurement, line, sizeof(line)) >= 0) {
             // fields contient des pointeurs dans line, pas huit copies de chaînes.
             // Les ';' deviennent des '\0' pour présenter les mêmes champs un par un.
@@ -518,7 +519,7 @@ static void acquisition(uint32_t now) {
         light_due = now + 1000;
         if (raw != 0xffff) {
             // Ramène les 12 bits ADC (0..4095) vers 10 bits (0..1023), avec arrondi entier.
-            // Le cast 32 bits permet de calculer le produit sans perdre la partie haute.
+            // La conversion de type 32 bits permet de calculer le produit sans perdre la partie haute.
             measurement.light = ((uint32_t)raw * 1023 + 2047) / 4095;
             measurement.status[SENSOR_LIGHT] = VALUE_OK;
         }

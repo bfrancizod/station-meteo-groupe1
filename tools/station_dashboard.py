@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
+# Rôle : Affiche les mesures reçues par liaison série, leurs courbes et leur export CSV.
 # Interface PC de la station : reçoit les textes produits par src/app.c et src/format.c,
 # les assemble en acquisitions, affiche les courbes et exporte l'historique local.
-# Le thread série communique par queues ; seul le thread principal manipule Tkinter.
+# Le fil d'exécution série communique par files d'attente ;
+# seul le fil d'exécution principal manipule Tkinter.
 """Tableau de bord local CESI. Python 3 + Tkinter + pyserial.
 
 Usage : python station_dashboard.py [--demo | --self-test]
@@ -20,7 +22,7 @@ from datetime import datetime
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 
-# Chaque tuple relie la clé exacte du firmware au titre, à l'unité et à la couleur affichés.
+# Chaque tuple relie la clé exacte du programme embarqué au titre, à l'unité et à la couleur affichés.
 # KEYS fixe l'ordre des huit champs du format compact et les noms attendus dans les blocs.
 METRICS = [("Temperature", "Température", "°C", "#fb923c"),
            ("Humidite", "Humidité", "%", "#38bdf8"),
@@ -76,11 +78,12 @@ class Parser:
         return None
 
 
-# Fonction exécutée dans un thread séparé : port est son nom, incoming les messages vers Tk,
+# Fonction exécutée dans un fil d'exécution séparé : port est son nom, incoming les messages vers Tk,
 # commands les commandes venant de Tk, stop l'événement demandant l'arrêt.
 # Les lectures série peuvent attendre ; les faire dans Tk bloquerait boutons et rafraîchissements.
-# Le thread ne touche aucun widget : il dépose seulement des messages dans des queues sûres
-# pour les échanges entre threads, que poll traitera dans la boucle graphique.
+# Le fil d'exécution ne touche aucun composant graphique : il dépose des messages
+# dans des files d'attente adaptées aux échanges entre fils d'exécution.
+# La fonction poll traite ensuite ces messages dans la boucle graphique.
 def serial_worker(port, incoming, commands, stop):
     """Tout accès au port est effectué par ce thread, jamais par Tkinter."""
     try:
@@ -99,10 +102,10 @@ def serial_worker(port, incoming, commands, stop):
                 except queue.Empty:
                     command = None
                 if command:
-                    # Le firmware termine une commande sur CR ou LF et accepte CRLF.
+                    # Le programme embarqué termine une commande sur CR ou LF et accepte CRLF.
                     connection.write((command + "\r\n").encode("ascii"))
                 # Un read ne correspond pas forcément à une ligne : garder les fragments
-                # en bytes jusqu'au '\n', puis seulement décoder le texte destiné à Tk.
+                # sous forme d'octets jusqu'au '\n', puis seulement décoder le texte destiné à Tk.
                 buffer += connection.read(min(connection.in_waiting or 1, 4096))
                 while b"\n" in buffer:
                     line, buffer = buffer.split(b"\n", 1)
@@ -118,11 +121,11 @@ def serial_worker(port, incoming, commands, stop):
         incoming.put(("closed", ""))
 
 
-# Fenêtre, historique et rendu : toutes ses méthodes sont appelées dans le thread Tkinter.
+# Fenêtre, historique et rendu : toutes ses méthodes sont appelées dans le fil d'exécution Tkinter.
 # Le matériel reste dans serial_worker ; Parser sépare les mesures des messages techniques.
 class Dashboard:
     # root est la fenêtre racine ; demo active des valeurs fictives sans ouvrir de port série.
-    # Construit les widgets puis programme poll avec after, sans boucle d'attente locale.
+    # Construit les composants graphiques puis programme poll avec after, sans boucle d'attente locale.
     def __init__(self, root, demo=False):
         self.root, self.demo = root, demo
         self.parser = Parser()
@@ -185,7 +188,7 @@ class Dashboard:
         self.freshness = tk.StringVar(value="Aucune acquisition reçue")
         ttk.Label(root, textvariable=self.freshness, padding=(18, 4)).pack(anchor="w")
         self.mode, self.rtc, self.sd, self.errors = "inconnu", "inconnu", "inconnu", "inconnu"
-        # Les StringVar sont reliées aux labels ; les modifier depuis Tk actualise le texte.
+        # Les StringVar sont reliées aux libellés ; les modifier depuis Tk actualise le texte.
         # Les Canvas redessinent leurs courbes lors d'une nouvelle mesure ou d'un redimensionnement.
         notebook = ttk.Notebook(root)
         notebook.pack(fill="both", expand=True, padx=18, pady=12)
@@ -218,7 +221,7 @@ class Dashboard:
             self.banner.set("DÉMONSTRATION : ces valeurs sont simulées, aucune station n’est connectée.")
             root.after(300, self.demo_sample)
 
-    # Callback du bouton Actualiser : liste les ports visibles, sans vérifier lequel est la station.
+    # Fonction de rappel du bouton Actualiser : liste les ports visibles, sans vérifier lequel est la station.
     # Le premier port retourné est choisi si le champ est vide ; /dev/ttyACM0 n'est que le repli.
     # Il faut donc vérifier la sélection, qui peut aussi désigner un port système comme ttyS31.
     def refresh_ports(self):
@@ -231,7 +234,8 @@ class Dashboard:
         if not self.port.get():
             self.port.set(ports[0] if ports else "/dev/ttyACM0")
 
-    # Callback de connexion/déconnexion : demande l'arrêt ou démarre un nouveau thread.
+    # Fonction de rappel de connexion/déconnexion : demande l'arrêt
+    # ou démarre un nouveau fil d'exécution.
     # La fermeture n'attend pas join dans Tk ; poll recevra le message closed.
     def toggle(self):
         if self.worker:
@@ -251,12 +255,12 @@ class Dashboard:
         self.commands = queue.Queue()
         self.stop = threading.Event()
         self.connect_button.configure(text="Connexion…", state="disabled")
-        # daemon évite que ce thread seul maintienne le processus après fermeture de la fenêtre.
+        # daemon évite que ce fil d'exécution seul maintienne le processus après fermeture de la fenêtre.
         self.worker = threading.Thread(target=serial_worker,
             args=(self.port.get().strip(), self.incoming, self.commands, self.stop), daemon=True)
         self.worker.start()
 
-    # Transmet une commande uniquement si connecté ; le thread série ajoutera CRLF et l'enverra.
+    # Transmet une commande uniquement si connecté ; le fil d'exécution série ajoutera CRLF et l'enverra.
     def send(self, command):
         if self.connected:
             self.commands.put(command)
@@ -265,7 +269,7 @@ class Dashboard:
     def update_state(self):
         self.state.set(f"Mode : {self.mode}   |   RTC : {self.rtc}   |   SD : {self.sd}   |   Erreurs : {self.errors}")
 
-    # Traite une ligne dans le thread Tk : console, messages d'état puis éventuelle acquisition.
+    # Traite une ligne dans le fil d'exécution Tk : console, messages d'état puis éventuelle acquisition.
     # L'expression régulière reconnaît le format STATUS sans confondre ses champs avec une mesure.
     def receive(self, line):
         self.log.configure(state="normal")
@@ -355,7 +359,7 @@ class Dashboard:
                 canvas.create_text(x, h-12, text=datetime.fromtimestamp(timestamp).strftime("%H:%M:%S"),
                                    fill=MUTED, anchor=anchor)
 
-    # Callback périodique Tk : traite au plus 300 messages puis rend la main à l'interface.
+    # Fonction de rappel périodique Tk : traite au plus 300 messages puis rend la main à l'interface.
     # get_nowait n'attend pas une donnée ; after relance ce traitement environ 100 ms plus tard.
     def poll(self):
         for _ in range(300):
@@ -383,7 +387,7 @@ class Dashboard:
         now = time.monotonic()
         if self.connected and now >= self.next_status:
             # STATUS toutes les 5 s renseigne les états, sans demander une nouvelle mesure.
-            # Ces commandes comptent aussi comme activité console pour le timeout configuration.
+            # Ces commandes comptent aussi comme activité console pour le délai d'inactivité du mode configuration.
             self.send("STATUS")
             self.next_status = now + 5
         if self.last_sample is not None:
@@ -397,7 +401,7 @@ class Dashboard:
             self.freshness.set("Aucune acquisition reçue • En standard/économique, le firmware affiche surtout les états SD.")
         self.root.after(100, self.poll)
 
-    # Callback Exporter : sauvegarde les acquisitions actuellement gardées, pas les fichiers SD.
+    # Fonction de rappel Exporter : sauvegarde les acquisitions actuellement gardées, pas les fichiers SD.
     # CSV sépare heure de réception PC et date station ; les chaînes NA et unités sont conservées.
     def export(self):
         if not self.history:
@@ -430,7 +434,8 @@ class Dashboard:
         self.update_state()
         self.root.after(2000, self.demo_sample)
 
-    # Callback de fermeture : signale l'arrêt au thread puis détruit les widgets dans Tk.
+    # Fonction de rappel de fermeture : signale l'arrêt au fil d'exécution
+    # puis détruit les composants graphiques dans Tk.
     def close(self):
         self.stop.set()
         self.root.destroy()

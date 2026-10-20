@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Rôle : Téléverse un binaire autorisé avec OpenOCD sans effacer les pages de réglages.
 # Charge le binaire validé à l'adresse Flash normale, sans effacement complet.
 # Les pages de paramètres à la fin de la Flash ne doivent pas être effacées.
 set -euo pipefail

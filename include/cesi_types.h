@@ -1,3 +1,4 @@
+// Rôle : Définit les structures de données échangées avec les pilotes Grove.
 // Structures de la base pédagogique échangées par les pilotes Grove.
 // Les services src/time_service.c, gps.c et environment.c les adaptent aux types applicatifs.
 #ifndef CESI_TYPES_H

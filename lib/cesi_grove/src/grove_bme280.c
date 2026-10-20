@@ -1,3 +1,4 @@
+// Rôle : Relie le pilote Bosch BME280 aux échanges I2C de la carte STM32.
 // Adaptateur maintenu pour le BME280 : relie src/environment.c au pilote Bosch tiers.
 // Les fonctions de rappel ci-dessous traduisent les accès registres en transactions I2C HAL.
 /* Interface HAL du pilote officiel Bosch, conservé avec sa licence. */
@@ -6,16 +7,16 @@
 #include "board_pins.h"
 extern I2C_HandleTypeDef GROVE_I2C_HANDLE;
 #include <math.h>
-// dev conserve configuration et coefficients Bosch ; address reste valide pendant les callbacks.
+// dev conserve configuration et coefficients Bosch ; address reste valide pendant les fonctions de rappel.
 static struct bme280_dev dev;
 static uint8_t address;
-// Callback Bosch : lit n octets depuis reg vers data ; ctx pointe l'adresse I2C sur 7 bits.
+// Fonction de rappel Bosch : lit n octets depuis reg vers data ; ctx pointe l'adresse I2C sur 7 bits.
 // *(uint8_t *)ctx récupère cette adresse, << 1 l'adapte à la HAL ; 0 = succès, -1 = échec.
 static int8_t read_reg(uint8_t reg, uint8_t *data, uint32_t n, void *ctx) {
     return HAL_I2C_Mem_Read(&hi2c1, (*(uint8_t *)ctx) << 1, reg, 1, data, n, 15) == HAL_OK ? 0 : -1;
 }
-// Callback symétrique d'écriture ; data appartient à Bosch et n'est pas modifié ici.
-// Le cast retire const pour la signature HAL ; il n'autorise pas à changer le contenu.
+// Fonction de rappel symétrique d'écriture ; data appartient à Bosch et n'est pas modifié ici.
+// La conversion de type retire const pour la signature HAL ; elle ne permet pas de changer le contenu.
 static int8_t write_reg(uint8_t reg, const uint8_t *data, uint32_t n, void *ctx) {
     return HAL_I2C_Mem_Write(&hi2c1, (*(uint8_t *)ctx) << 1, reg, 1, (uint8_t *)data, n, 15) ==
                    HAL_OK

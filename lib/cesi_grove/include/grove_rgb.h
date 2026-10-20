@@ -1,3 +1,4 @@
+// Rôle : Déclare les fonctions de commande de la LED RVB Grove.
 #ifndef GROVE_RGB_H
 #define GROVE_RGB_H
 

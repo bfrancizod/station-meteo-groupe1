@@ -1,3 +1,4 @@
+# Rôle : Définit les règles de présentation du code pour l'outil clang-format.
 BasedOnStyle: LLVM
 IndentWidth: 4
 ColumnLimit: 100

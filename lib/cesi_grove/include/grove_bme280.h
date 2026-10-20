@@ -1,3 +1,4 @@
+// Rôle : Déclare les fonctions de mesure du capteur BME280.
 // Interface du pilote adapté BME280, utilisée par src/environment.c.
 // Init configure le capteur via I2C ; Begin déclenche ; Read copie les mesures compensées dans data.
 #ifndef GROVE_BME280_H

@@ -1,3 +1,4 @@
+// Rôle : Sauvegarde et recharge les réglages dans deux emplacements de mémoire Flash.
 // Persistance des réglages utilisés par app.c : deux emplacements Flash définis
 // avec linker.ld, un numéro de séquence et le CRC32 de config.c pour choisir une copie valide.
 /* Deux pages Flash réservées par linker.ld : l'ancienne reste valide si
@@ -9,7 +10,7 @@
 #define SLOT0 0x080FF000u
 #define SLOT1 0x080FF800u
 #define COMMIT 0x4345534957575731ULL
-/* Format propre à la version 1 du firmware ; augmenter version si Config change. */
+/* Format propre à la version 1 du programme embarqué ; augmenter version si Config change. */
 // Record est l'image écrite en Flash ; commit est placé à la fin et écrit en dernier.
 // Un enregistrement interrompu avant ce marqueur ne sera pas retenu au redémarrage.
 typedef struct {

@@ -1,5 +1,6 @@
+// Rôle : Déclare les fonctions de réception et de validation des positions GPS.
 // Interface historique Air530Z utilisée pour le SIM28 et adaptée par src/gps.c.
-// Les données GPS_Data sont validées depuis des GGA ; le seul trafic UART ne garantit pas un fix.
+// Les données GPS_Data sont validées depuis des GGA ; le seul trafic UART ne garantit pas une position valide.
 #ifndef GROVE_GPS_AIR530Z_H
 #define GROVE_GPS_AIR530Z_H
 

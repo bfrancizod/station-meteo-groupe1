@@ -1,3 +1,4 @@
+// Rôle : Mesure la luminosité brute avec le convertisseur analogique-numérique.
 // Pilote de luminosité analogique sur PA4/ADC1_IN9, appelé via Board_Light dans setup.c.
 // Le pilote fournit une valeur brute ; app.c la ramène à 0..1023, sans conversion en lux.
 #include "grove_light.h"

@@ -1,3 +1,4 @@
+// Rôle : Adapte les positions du pilote GPS aux données utilisées par l'application.
 // Adaptateur entre le GPS_Data de la base Grove et le GpsFix utilisé par Measurement.
 // app.c appelle ces services ; l'assemblage des phrases et leur validation restent au pilote.
 /* Façade applicative du pilote NMEA fourni et complété. */
@@ -27,7 +28,7 @@ void Gps_Reset(void) {
     GroveGPS_Reset();
 }
 // since est le début de collecte en ms HAL ; vrai remplit *out avec une position récente.
-// L'appelant fournit un pointeur valide ; une absence de fix laisse la mesure en attente.
+// L'appelant fournit un pointeur valide ; une absence de position valide laisse la mesure en attente.
 bool Gps_Take(uint32_t since, GpsFix *out) {
     GPS_Data data;
     if (!GroveGPS_Take(since, &data))

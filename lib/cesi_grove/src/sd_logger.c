@@ -1,3 +1,4 @@
+// Rôle : Initialise le dialogue SPI avec la carte SD et fournit ses diagnostics.
 // Pilote SD de la base pédagogique, adapté pour l'initialisation SPI et les diagnostics.
 // diskio_spi.c l'appelle avant les transferts de secteurs ; sd_logger_file.c assure WriteLine.
 // Une réponse à CMD0 ne prouve ni montage FAT ni écriture de fichier.
@@ -170,7 +171,7 @@ bool SDLogger_Init(void)
         HAL_Delay(SD_POWERUP_DELAY_MS);
 
         // Dix octets à 0xff produisent 80 coups d'horloge avec CS inactif.
-        /* Send at least 74 clocks with CS high as mandated by SD SPI mode. */
+        /* Envoyer au moins 74 impulsions avec CS au niveau haut, comme l'exige le mode SPI de la SD. */
         for (i = 0; i < 10; ++i)
         {
             (void)SD_SPI_Transfer(0xFF);
@@ -337,26 +338,26 @@ const char *SDLogger_GetActiveCsLabel(void)
     return g_cs_candidates[g_active_cs_index].label;
 }
 
-/* ---------- bit-bang diagnostic ----------------------------------------- */
+/* ---------- Diagnostic par pilotage logiciel des broches ---------------- */
 
 // Diagnostic seulement : désactive SPI et reprend SCK/MOSI/MISO comme GPIO ordinaires.
 static void SD_ReconfigPinsGPIO(void)
 {
     GPIO_InitTypeDef gpio = {0};
 
-    /* Disable SPI1 peripheral while we take over the pins */
+    /* Désactiver SPI1 pour commander directement ses broches */
     SD_SPI_HANDLE.Instance->CR1 &= ~SPI_CR1_SPE;
 
-    /* PA5 = SCK, PA7 = MOSI: push-pull outputs */
+    /* PA5 = SCK, PA7 = MOSI : sorties commandant les niveaux haut et bas */
     gpio.Pin   = GPIO_PIN_5 | GPIO_PIN_7;
     gpio.Mode  = GPIO_MODE_OUTPUT_PP;
     gpio.Pull  = GPIO_NOPULL;
     gpio.Speed = GPIO_SPEED_FREQ_LOW;
     HAL_GPIO_Init(GPIOA, &gpio);
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET); /* SCK idle low  */
-    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);   /* MOSI idle high */
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET); /* SCK au repos au niveau bas  */
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);   /* MOSI au repos au niveau haut */
 
-    /* PA6 = MISO: input with pull-up */
+    /* PA6 = MISO : entrée avec résistance de rappel au niveau haut */
     gpio.Pin  = GPIO_PIN_6;
     gpio.Mode = GPIO_MODE_INPUT;
     gpio.Pull = GPIO_PULLUP;
@@ -382,7 +383,7 @@ static void SD_ReconfigPinsSPI(void)
     SD_SPI_HANDLE.Instance->CR1 |= SPI_CR1_SPE;
 }
 
-// Échange un octet en pilotant chaque front d'horloge par logiciel (bit-bang).
+// Échange un octet en pilotant chaque front d'horloge par logiciel.
 // Décale tx pour envoyer le bit fort ; construit rx en échantillonnant MISO à chaque bit.
 static uint8_t SD_BitBangByte(uint8_t tx)
 {
@@ -394,13 +395,13 @@ static uint8_t SD_BitBangByte(uint8_t tx)
         HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7,
                           (tx & 0x80U) ? GPIO_PIN_SET : GPIO_PIN_RESET);
         tx <<= 1;
-        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);   /* rising edge  */
+        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);   /* front montant  */
         rx <<= 1;
         if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == GPIO_PIN_SET)
         {
             rx |= 1U;
         }
-        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET); /* falling edge */
+        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET); /* front descendant */
     }
 
     return rx;
@@ -417,7 +418,7 @@ bool SDLogger_BitBangCMD0Test(void)
 
     SD_ReconfigPinsGPIO();
 
-    /* --- GPIO self-test: verify CS output and MISO input are accessible --- */
+    /* --- Autotest GPIO : vérifier l'accès à la sortie CS et à l'entrée MISO --- */
     HAL_GPIO_WritePin(SD_CS_PORT, SD_CS_PIN, GPIO_PIN_SET);
     cs_rb = HAL_GPIO_ReadPin(SD_CS_PORT, SD_CS_PIN);
     printf("[SD bitbang] CS readback HIGH: %d (expected 1)\r\n", cs_rb);
@@ -426,7 +427,7 @@ bool SDLogger_BitBangCMD0Test(void)
     cs_rb = HAL_GPIO_ReadPin(SD_CS_PORT, SD_CS_PIN);
     printf("[SD bitbang] CS readback LOW:  %d (expected 0)\r\n", cs_rb);
 
-    /* Raw IDR dump: GPIOA bits 5(SCK) 6(MISO) 7(MOSI), GPIOB bit 5(CS) */
+    /* Lecture brute des registres IDR : GPIOA bits 5(SCK), 6(MISO), 7(MOSI) ; GPIOB bit 5(CS) */
     {
         uint32_t idr_a = GPIOA->IDR;
         uint32_t idr_b = GPIOB->IDR;
@@ -438,17 +439,17 @@ bool SDLogger_BitBangCMD0Test(void)
     HAL_GPIO_WritePin(SD_CS_PORT, SD_CS_PIN, GPIO_PIN_SET);
     HAL_Delay(10U);
 
-    /* --- 80 init clocks with CS high --- */
+    /* --- 80 impulsions d'initialisation avec CS au niveau haut --- */
     for (i = 0; i < 10U; ++i)
     {
         (void)SD_BitBangByte(0xFFU);
     }
 
-    /* MISO state just before CMD0 */
+    /* État de MISO juste avant CMD0 */
     printf("[SD bitbang] MISO before CMD0: %d\r\n",
            HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6));
 
-    /* CS low, send CMD0 */
+    /* Abaisser CS puis envoyer CMD0 */
     HAL_GPIO_WritePin(SD_CS_PORT, SD_CS_PIN, GPIO_PIN_RESET);
     (void)SD_BitBangByte(0x40U);
     (void)SD_BitBangByte(0x00U);

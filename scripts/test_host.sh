@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Rôle : Compile et exécute les trois suites de tests C sur le PC.
 set -euo pipefail
 cd -- "$(dirname -- "$0")/.."
 mkdir -p .test-build

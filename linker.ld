@@ -1,3 +1,4 @@
+/* Rôle : Répartit le programme en mémoire et réserve les pages Flash des réglages. */
 /* STM32L476RG : 1 Mo Flash ; 4 Ko réservés pour deux pages de configuration.
  * SRAM1 96 Ko utilisée ; SRAM2 32 Ko à 0x10000000 non allouée implicitement. */
 ENTRY(Reset_Handler)

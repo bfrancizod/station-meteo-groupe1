@@ -1,3 +1,4 @@
+// Rôle : Déclare les fonctions d'initialisation, de diagnostic et d'écriture de la carte SD.
 // Interface du pilote SD de la base, utilisée par diskio_spi.c et storage.c.
 // Init concerne le protocole SPI ; WriteLine nécessite déjà un volume FAT monté.
 #ifndef SD_LOGGER_H

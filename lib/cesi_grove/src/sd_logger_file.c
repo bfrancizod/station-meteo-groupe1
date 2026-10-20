@@ -1,3 +1,4 @@
+// Rôle : Ajoute une ligne dans un fichier SD puis ferme et synchronise ce fichier.
 // Complément du pilote SD : ajoute une ligne via FatFs à la demande de storage.c.
 // La gestion de la date et de la rotation reste dans storage.c, les secteurs dans diskio_spi.c.
 /* Implémentation réelle de SDLogger_WriteLine, absente de la base initiale.

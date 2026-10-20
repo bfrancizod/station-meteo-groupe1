@@ -1,15 +1,16 @@
+// Rôle : Enregistre les acquisitions sur SD et archive les fichiers atteignant leur limite.
 // Couche fichiers : app.c fournit une Measurement, format.c la transforme en texte,
 // FatFs organise les fichiers et diskio_spi.c transfère les secteurs à la carte SD.
 // SDLogger_Init réussi, volume monté et ligne écrite sont trois étapes distinctes.
 /* Journal FAT. Une archive n'efface jamais le fichier actif avant vérification.
- * Une panne électrique peut néanmoins endommager FAT : ce n'est pas un FS journalisé. */
+ * Une panne électrique peut néanmoins endommager FAT : ce n'est pas un système de fichiers journalisé. */
 #include "board.h"
 #include "sd_logger.h"
 #include "ff.h"
 #include "services.h"
 #include <stdio.h>
 #include <string.h>
-// Objets persistants pour FatFs et buffers de copie de 512 octets, privés au fichier.
+// Objets persistants pour FatFs et tampons de copie de 512 octets, privés au fichier.
 // Le code suppose un seul appel de stockage à la fois ; Board_Pump n'en déclenche pas d'autre.
 static FATFS fs;
 static bool mounted;

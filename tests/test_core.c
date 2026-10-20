@@ -1,3 +1,4 @@
+// Rôle : Vérifie les réglages, le CRC, le calendrier, le décodage GPS et le format des mesures.
 /* Tests exécutables sur PC : aucun matériel STM32 nécessaire. */
 #include "services.h"
 #include <assert.h>

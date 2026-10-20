@@ -1,3 +1,4 @@
+// Rôle : Transmet à l'application les mesures de température, d'humidité et de pression.
 // Pont entre app.c (trois valeurs séparées) et grove_bme280.c (structure Env_Data).
 // La compensation physique est assurée par le pilote Bosch derrière l'interface Grove.
 /* Adaptation applicative des interfaces Grove : les types fournis sont réutilisés. */

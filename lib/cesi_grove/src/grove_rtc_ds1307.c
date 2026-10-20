@@ -1,3 +1,4 @@
+// Rôle : Lit et règle la date de l'horloge DS1307 en vérifiant sa validité.
 // Accès I2C à la RTC DS1307 ; src/time_service.c traduit ensuite ses types pour app.c.
 // La date sert à horodater les mesures et nommer les journaux SD.
 /* Pilote DS1307 fourni, complété pour refuser date invalide et oscillateur arrêté. */

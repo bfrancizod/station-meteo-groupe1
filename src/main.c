@@ -1,4 +1,5 @@
-// Point d'entrée du firmware : setup.c prépare la carte, puis app.c pilote la station.
+// Rôle : Démarre la carte puis appelle continuellement la supervision de la station.
+// Point d'entrée du programme embarqué : setup.c prépare la carte, puis app.c pilote la station.
 // Les pilotes Grove sont utilisés à travers les services déclarés dans services.h.
 // Il n'y a pas de système de tâches ici : la boucle rappelle régulièrement l'application.
 #include <stdio.h>

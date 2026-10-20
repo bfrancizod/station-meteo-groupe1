@@ -1,3 +1,4 @@
+// Rôle : Lit l'état électrique des deux boutons selon leur polarité configurée.
 // Lecture GPIO des deux boutons, utilisée par les adaptateurs Board_Red/Board_Green de setup.c.
 // L'association aux couleurs vient de board_pins.h ; rebonds et appuis longs sont traités dans app.c.
 #include "grove_button.h"
@@ -11,7 +12,7 @@ void GroveButton_Init(void)
 
     GPIO_InitTypeDef gpio = {0};
     gpio.Mode = GPIO_MODE_INPUT;
-    /* La polarité dépend du module ; le pull doit suivre le niveau de repos. */
+    /* La polarité dépend du module ; le rappel électrique doit suivre le niveau de repos. */
     gpio.Pull = BUTTON_ACTIVE_LOW ? GPIO_PULLUP : GPIO_PULLDOWN;
 
     gpio.Pin = BUTTON1_PIN;

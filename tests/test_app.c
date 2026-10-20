@@ -1,3 +1,4 @@
+// Rôle : Vérifie les acquisitions, les changements de mode et les accès SD avec du matériel simulé.
 /* Test d'intégration du superviseur avec périphériques simulés.
  * Il ne valide ni les niveaux électriques, ni les transactions des pilotes. */
 #include "board.h"

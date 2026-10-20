@@ -1,3 +1,4 @@
+// Rôle : Vérifie les journaux et les archives FatFs sur une carte SD simulée en mémoire.
 /* Intégration avec le vrai FatFs et un disque RAM : rotation, révisions >9,
  * reprise et refus d'une archive temporaire existante sans perte du fichier _0. */
 #include "ff.h"

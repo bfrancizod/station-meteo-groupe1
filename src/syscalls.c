@@ -1,8 +1,9 @@
+// Rôle : Adapte les services minimaux de la bibliothèque C à la mémoire et à la console STM32.
 // Adaptations minimales de la bibliothèque C au STM32 : tas et terminal série.
 // linker.ld fixe les limites du tas ; setup.c fournit l'émission _write utilisée par printf.
 /* newlib-nano utilise un petit tas pour convertir les nombres réels dans
  * strtod et snprintf. L'application n'alloue aucun objet elle-même.
- * Le tas est explicitement borné par le linker : jamais d'empiètement sur la pile. */
+ * Le tas est explicitement borné par l'éditeur de liens : jamais d'empiètement sur la pile. */
 #include <errno.h>
 #include <stddef.h>
 #include <stdint.h>

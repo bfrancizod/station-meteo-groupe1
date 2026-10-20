@@ -1,3 +1,4 @@
+// Rôle : Déclare les accès matériels de la carte utilisés par l'application et les pilotes.
 // Interface matérielle implémentée par setup.c, partagée avec app.c et les pilotes.
 // Les gardes #ifndef/#define empêchent de déclarer plusieurs fois le même en-tête.
 #ifndef BOARD_H
@@ -12,7 +13,7 @@ extern UART_HandleTypeDef huart2, huart4;
 // Initialisation unique avant App_Init ; configure horloges, broches et communications.
 void Global_Init(void);
 // Le fond traite GPS, boutons et LED ; les commandes console restent dans App_Process.
-void Board_Pump(void); /* Parse UART et rend le contrôle à l'interface. */
+void Board_Pump(void); /* Analyse le flux UART et rend le contrôle à l'interface. */
 // Enfile une chaîne terminée par zéro ; des octets peuvent être abandonnés si le tampon est plein.
 void Board_ConsoleWrite(const char *s);
 // Lectures sans attente : un octet 0..255, ou -1 si le tampon correspondant est vide.
