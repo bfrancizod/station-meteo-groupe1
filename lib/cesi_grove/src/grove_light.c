@@ -1,8 +1,12 @@
+// Pilote de luminosité analogique sur PA4/ADC1_IN9, appelé via Board_Light dans setup.c.
+// Le pilote fournit une valeur brute ; app.c la ramène à 0..1023, sans conversion en lux.
 #include "grove_light.h"
 #include "board_pins.h"
 
 ADC_HandleTypeDef hadc1;
 
+// Initialise et calibre ADC1 pour une seule conversion déclenchée par logiciel.
+// Appelée au démarrage ; le mode analogique évite d'utiliser cette broche comme entrée numérique.
 void GroveLight_Init(void)
 {
     __HAL_RCC_GPIOA_CLK_ENABLE();
@@ -44,6 +48,9 @@ void GroveLight_Init(void)
     HAL_ADC_ConfigChannel(&hadc1, &sConfig);
 }
 
+// Démarre puis attend au plus 5 ms une conversion ; renvoie 0..4095 ou 0xffff en échec.
+// 0xffff est hors de la plage 12 bits et ne doit jamais être pris pour une luminosité.
+// Ce court appel est bloquant ; les nouvelles tentatives sont espacées par app.c.
 uint16_t GroveLight_ReadRaw(void)
 {
     if (HAL_ADC_Start(&hadc1) != HAL_OK)

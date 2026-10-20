@@ -1,3 +1,5 @@
+// Pilote hérité conservé pour la base pédagogique ; le cycle actuel utilise le BME280.
+// Seule l'identification I2C est disponible ici ; aucune mesure BME680 n'est produite.
 #include "grove_bme680.h"
 #include "board_pins.h"
 
@@ -9,6 +11,8 @@ extern I2C_HandleTypeDef GROVE_I2C_HANDLE;
 
 static uint16_t bme680_addr = BME680_ADDR_DEFAULT;
 
+// Sélectionne reg puis reçoit len octets dans data ; vrai si les deux échanges réussissent.
+// bme680_addr est déjà décalée pour le format d'adresse attendu par la HAL.
 static bool read_reg(uint8_t reg, uint8_t *data, uint16_t len)
 {
     if (HAL_I2C_Master_Transmit(&GROVE_I2C_HANDLE, bme680_addr, &reg, 1, 100) != HAL_OK)
@@ -19,12 +23,14 @@ static bool read_reg(uint8_t reg, uint8_t *data, uint16_t len)
 
 /* Écriture de registres non utilisée : le BME680 reste un pilote hérité. */
 
+// Lit l'identifiant dans l'octet pointé par chip_id ; faux pour un pointeur nul ou un échec I2C.
 bool GroveBME680_ReadChipId(uint8_t *chip_id)
 {
     if (chip_id == 0) return false;
     return read_reg(BME680_REG_ID, chip_id, 1);
 }
 
+// Essaie les deux adresses et vérifie l'identifiant BME680 ; ne configure pas de compensation.
 bool GroveBME680_Init(void)
 {
     /*
@@ -44,6 +50,7 @@ bool GroveBME680_Init(void)
     return false;
 }
 
+// Renvoie toujours faux sans remplir data : une interface présente ne garantit pas sa disponibilité.
 bool GroveBME680_ReadEnvironment(Env_Data *data)
 {
     (void)data;

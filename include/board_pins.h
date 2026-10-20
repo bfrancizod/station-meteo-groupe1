@@ -1,8 +1,12 @@
+// Affectations utilisées par setup.c et les pilotes Grove pour le montage de cette station.
+// Les macros remplacent des noms à la compilation ; elles ne contrôlent pas le câblage physique.
+// Une communication observée ne suffit pas à valider les tensions admissibles des modules.
 #ifndef BOARD_PINS_H
 #define BOARD_PINS_H
 
 #include "stm32l4xx_hal.h"
 
+// La LED reçoit une trame série P9813 à horloge sur son entrée IN ; ce n'est pas de l'I2C.
 /*
  * Grove Chainable RGB LED :
  * - Port Grove D6 du shield
@@ -44,6 +48,8 @@
  * Grove RTC DS1307 + BME280 sur la maquette (BME680 dans la base)
  * Tous deux sur I2C.
  */
+// Le handle I2C1 est configuré sur PB8/SCL et PB9/SDA dans setup.c.
+// Les pilotes essaient 0x68 pour la RTC et 0x76/0x77 pour le BME280.
 #define GROVE_I2C_HANDLE hi2c1
 
 /*
@@ -53,11 +59,15 @@
 #define SD_CS_PORT GPIOB
 #define SD_CS_PIN  GPIO_PIN_5
 
+// SPI1 utilise PA5/SCK, PA6/MISO, PA7/MOSI ; le CS PB5 est commandé séparément.
 #define SD_SPI_HANDLE hspi1
 
 /* Options du montage réel : les broches de la base restent inchangées. */
+// 0 associe rouge au bouton 2 (PB3), vert au bouton 1 (PA10) : correction du montage actuel.
 #define RED_IS_BUTTON1 0
+// 1 signifie appui au niveau bas ; les GPIO utilisent donc un rappel au niveau haut.
 #define BUTTON_ACTIVE_LOW 1
+// 1 active l'échange RX/TX UART4 sur PA0/PA1 dans le pilote GPS.
 #define GPS_SWAP_PINS 1
 #define GPS_UART_HANDLE huart4
 

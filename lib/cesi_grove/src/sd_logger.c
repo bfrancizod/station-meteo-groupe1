@@ -1,3 +1,6 @@
+// Pilote SD de la base pédagogique, adapté pour l'initialisation SPI et les diagnostics.
+// diskio_spi.c l'appelle avant les transferts de secteurs ; sd_logger_file.c assure WriteLine.
+// Une réponse à CMD0 ne prouve ni montage FAT ni écriture de fichier.
 #include "sd_logger.h"
 #include "board_pins.h"
 #include "stm32l4xx_hal.h"
@@ -17,6 +20,7 @@
 #define SD_INIT_TIMEOUT_MS 1000U
 #define SD_POWERUP_DELAY_MS 50U
 
+// Association port/broche/étiquette du CS (sélection de carte) ; un seul candidat ici, PB5.
 typedef struct
 {
     GPIO_TypeDef *port;
@@ -26,6 +30,7 @@ typedef struct
 
 extern SPI_HandleTypeDef SD_SPI_HANDLE;
 
+// Dernier type et dernier diagnostic gardés entre les appels, consultables par les accesseurs.
 static SDLoggerCardType g_card_type = SDLOGGER_CARD_UNKNOWN;
 static SDLoggerInitStatus g_init_status = SDLOGGER_INIT_ERR_CMD0;
 static uint8_t g_active_cs_index = 0;
@@ -36,6 +41,8 @@ static const SDChipSelect g_cs_candidates[] = {
 
 #define SD_CS_CANDIDATE_COUNT ((uint8_t)(sizeof(g_cs_candidates) / sizeof(g_cs_candidates[0])))
 
+// Échange un octet en SPI ; le code HAL de retour est ignoré dans cette fonction héritée.
+// La suite du protocole juge donc le succès à partir des octets reçus.
 static uint8_t SD_SPI_Transfer(uint8_t tx)
 {
     uint8_t rx = 0xFF;
@@ -43,6 +50,7 @@ static uint8_t SD_SPI_Transfer(uint8_t tx)
     return rx;
 }
 
+// Remonte CS et fournit un dernier octet d'horloge pour relâcher l'échange.
 static void SD_Deselect(void)
 {
     HAL_GPIO_WritePin(g_cs_candidates[g_active_cs_index].port,
@@ -51,6 +59,7 @@ static void SD_Deselect(void)
     (void)SD_SPI_Transfer(0xFF);
 }
 
+// Abaisse le CS choisi ; aucun octet n'est envoyé par cette seule action.
 static void SD_Select(void)
 {
     HAL_GPIO_WritePin(g_cs_candidates[g_active_cs_index].port,
@@ -58,6 +67,7 @@ static void SD_Select(void)
                       GPIO_PIN_RESET);
 }
 
+// Choisit un index valide de g_cs_candidates et désélectionne toutes les entrées de la table.
 static void SD_SetActiveChipSelect(uint8_t index)
 {
     uint8_t i;
@@ -69,6 +79,8 @@ static void SD_SetActiveChipSelect(uint8_t index)
     }
 }
 
+// Attend au plus timeout_ms que la carte ne soit plus occupée ; vrai quand MISO renvoie 0xff.
+// Board_Pump maintient les services de fond pendant cette attente dans la boucle principale.
 static bool SD_WaitReady(uint32_t timeout_ms)
 {
     uint32_t start = HAL_GetTick();
@@ -85,6 +97,8 @@ static bool SD_WaitReady(uint32_t timeout_ms)
     return false;
 }
 
+// Construit une commande de six octets : index, argument en ordre fort d'abord, puis CRC.
+// Retourne R1 (bit haut nul), ou une valeur sans réponse ; le demandeur relâche ensuite CS.
 static uint8_t SD_SendCommand(uint8_t cmd, uint32_t arg, uint8_t crc)
 {
     uint8_t response = 0xFF;
@@ -127,6 +141,9 @@ static uint8_t SD_SendCommand(uint8_t cmd, uint32_t arg, uint8_t crc)
     return response;
 }
 
+// Initialise le dialogue carte, sans lire le système de fichiers.
+// Vrai signifie protocole d'initialisation terminé ; consultez le statut en cas de faux.
+// Appel synchrone : certaines attentes servent Board_Pump, les HAL_Delay restent bloquants.
 bool SDLogger_Init(void)
 {
     uint8_t cs_index;
@@ -152,6 +169,7 @@ bool SDLogger_Init(void)
 
         HAL_Delay(SD_POWERUP_DELAY_MS);
 
+        // Dix octets à 0xff produisent 80 coups d'horloge avec CS inactif.
         /* Send at least 74 clocks with CS high as mandated by SD SPI mode. */
         for (i = 0; i < 10; ++i)
         {
@@ -168,6 +186,7 @@ bool SDLogger_Init(void)
 
         r1 = 0xFFU;
         sample_count = 0U;
+        // CMD0 demande l'état initial SPI : 0x01 confirme cet état, pas une écriture réussie.
         for (cmd0_try = 0; cmd0_try < 32U; ++cmd0_try)
         {
             r1 = SD_SendCommand(SD_CMD0, 0x00000000UL, 0x95U);
@@ -204,6 +223,7 @@ bool SDLogger_Init(void)
             continue;
         }
 
+        // CMD8 vérifie la réponse au motif 0x1aa ; une commande illégale mène au chemin ancien.
         r1 = SD_SendCommand(SD_CMD8, 0x000001AAUL, 0x87U);
         if (r1 == SD_R1_IDLE_STATE)
         {
@@ -219,6 +239,8 @@ bool SDLogger_Init(void)
                 continue;
             }
 
+            // CMD55 annonce une commande applicative ; ACMD41 lance l'initialisation
+            // avec support haute capacité. On répète jusqu'à R1=0 ou expiration.
             start = HAL_GetTick();
             do
             {
@@ -246,6 +268,7 @@ bool SDLogger_Init(void)
                 continue;
             }
 
+            // CMD58 lit OCR ; le bit 0x40 détermine l'adressage en blocs SDHC.
             r1 = SD_SendCommand(SD_CMD58, 0x00000000UL, 0x01U);
             if (r1 != 0x00U)
             {
@@ -274,6 +297,7 @@ bool SDLogger_Init(void)
 
         SD_Deselect();
 
+        // Chemin de compatibilité réellement présent : après refus de CMD8, essayer CMD1.
         start = HAL_GetTick();
         do
         {
@@ -295,16 +319,19 @@ bool SDLogger_Init(void)
     return false;
 }
 
+// Renvoie le type mémorisé après initialisation ; UNKNOWN ne donne pas d'adressage exploitable.
 SDLoggerCardType SDLogger_GetCardType(void)
 {
     return g_card_type;
 }
 
+// Renvoie l'étape d'échec mémorisée, sans recommencer l'initialisation.
 SDLoggerInitStatus SDLogger_GetLastInitStatus(void)
 {
     return g_init_status;
 }
 
+// Renvoie une chaîne constante de la table ; l'appelant ne doit pas la modifier.
 const char *SDLogger_GetActiveCsLabel(void)
 {
     return g_cs_candidates[g_active_cs_index].label;
@@ -312,6 +339,7 @@ const char *SDLogger_GetActiveCsLabel(void)
 
 /* ---------- bit-bang diagnostic ----------------------------------------- */
 
+// Diagnostic seulement : désactive SPI et reprend SCK/MOSI/MISO comme GPIO ordinaires.
 static void SD_ReconfigPinsGPIO(void)
 {
     GPIO_InitTypeDef gpio = {0};
@@ -335,6 +363,7 @@ static void SD_ReconfigPinsGPIO(void)
     HAL_GPIO_Init(GPIOA, &gpio);
 }
 
+// Rétablit la fonction alternative SPI1 après le diagnostic manuel.
 static void SD_ReconfigPinsSPI(void)
 {
     GPIO_InitTypeDef gpio = {0};
@@ -353,6 +382,8 @@ static void SD_ReconfigPinsSPI(void)
     SD_SPI_HANDLE.Instance->CR1 |= SPI_CR1_SPE;
 }
 
+// Échange un octet en pilotant chaque front d'horloge par logiciel (bit-bang).
+// Décale tx pour envoyer le bit fort ; construit rx en échantillonnant MISO à chaque bit.
 static uint8_t SD_BitBangByte(uint8_t tx)
 {
     uint8_t rx = 0;
@@ -375,6 +406,9 @@ static uint8_t SD_BitBangByte(uint8_t tx)
     return rx;
 }
 
+// Outil hérité, absent du cycle normal : teste seulement CMD0 puis rétablit SPI.
+// Les messages orientent un diagnostic ; ce test ne démontre pas à lui seul la cause
+// d'un échec, la validité du câblage complet ou le succès d'une écriture FAT.
 bool SDLogger_BitBangCMD0Test(void)
 {
     uint8_t i;

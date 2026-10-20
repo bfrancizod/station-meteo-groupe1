@@ -1,9 +1,12 @@
+// Structures de la base pédagogique échangées par les pilotes Grove.
+// Les services src/time_service.c, gps.c et environment.c les adaptent aux types applicatifs.
 #ifndef CESI_TYPES_H
 #define CESI_TYPES_H
 
 #include <stdint.h>
 #include <stdbool.h>
 
+// Heure lue/écrite dans la DS1307 : année complète, jour de semaine de dimanche=1 à samedi=7.
 typedef struct
 {
     uint8_t seconds;
@@ -15,6 +18,8 @@ typedef struct
     uint16_t year;
 } RTC_DateTime;
 
+// Résultat NMEA : valid qualifie la position ; raw_sentence est une copie bornée de la phrase.
+// Latitude/longitude sont en degrés décimaux ; qualité et satellites viennent de la GGA.
 typedef struct
 {
     bool valid;
@@ -27,6 +32,8 @@ typedef struct
     uint8_t satellites;
 } GPS_Data;
 
+// Mesures environnementales avec unités explicites. Sur BME280, la résistance gaz vaut NaN :
+// cette grandeur n'est pas mesurée ; temperature/humidity/pressure restent indépendantes.
 typedef struct
 {
     float temperature_c;

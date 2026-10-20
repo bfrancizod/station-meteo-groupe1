@@ -1,7 +1,10 @@
+// Accès I2C à la RTC DS1307 ; src/time_service.c traduit ensuite ses types pour app.c.
+// La date sert à horodater les mesures et nommer les journaux SD.
 /* Pilote DS1307 fourni, complété pour refuser date invalide et oscillateur arrêté. */
 #include "grove_rtc_ds1307.h"
 #include "board_pins.h"
 extern I2C_HandleTypeDef GROVE_I2C_HANDLE;
+// Vérifie les champs du calendrier 2000..2099 ; février peut avoir 29 jours.
 static bool rtc_valid(const RTC_DateTime *d) {
     static const uint8_t days[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     return d && d->year >= 2000 && d->year <= 2099 && d->month >= 1 && d->month <= 12 &&
@@ -9,18 +12,24 @@ static bool rtc_valid(const RTC_DateTime *d) {
            d->hours < 24 && d->minutes < 60 && d->seconds < 60 && d->dayOfWeek >= 1 &&
            d->dayOfWeek <= 7;
 }
+// Vérifie uniquement que l'adresse 0x68 répond, sans garantir une date valide.
 bool GroveRTC_Init(void) {
     return HAL_I2C_IsDeviceReady(&GROVE_I2C_HANDLE, 0x68 << 1, 1, 15) == HAL_OK;
 }
+// Décode le BCD : chaque demi-octet représente un chiffre décimal, par exemple 0x25 -> 25.
 static uint8_t dec(uint8_t v) {
     return (v >> 4) * 10 + (v & 15);
 }
+// Opération inverse pour écrire dans les registres RTC ; v doit être dans les bornes du champ.
 static uint8_t bcd(uint8_t v) {
     return (v / 10) * 16 + v % 10;
 }
+// Refuse un demi-octet 10..15, qui n'est pas un chiffre BCD.
 static bool bcd_ok(uint8_t v) {
     return (v & 15) < 10 && (v >> 4) < 10;
 }
+// Lit sept registres à partir de zéro ; vrai rend *d exploitable, faux interdit son utilisation.
+// Le bit CH (0x80 des secondes) indique l'oscillateur arrêté et provoque un refus.
 bool GroveRTC_GetDateTime(RTC_DateTime *d) {
     if (!d)
         return false;
@@ -33,6 +42,8 @@ bool GroveRTC_GetDateTime(RTC_DateTime *d) {
     d->seconds = dec(b[0] & 0x7f);
     d->minutes = dec(b[1]);
     if (b[2] & 0x40) {
+        // En format 12 h, retirer les bits de mode puis convertir AM/PM vers 0..23 h.
+        // Le modulo transforme 12 AM en 0 h et 12 PM en 12 h.
         unsigned h = dec(b[2] & 0x1f);
         if (h < 1 || h > 12)
             return false;
@@ -45,6 +56,8 @@ bool GroveRTC_GetDateTime(RTC_DateTime *d) {
     d->year = 2000 + dec(b[6]);
     return rtc_valid(d);
 }
+// Valide puis écrit les sept registres en BCD, au format 24 h et avec CH à zéro.
+// Renvoie le succès I2C ; d reste inchangé et aucune date de remplacement n'est inventée.
 bool GroveRTC_SetDateTime(const RTC_DateTime *d) {
     if (!rtc_valid(d))
         return false;

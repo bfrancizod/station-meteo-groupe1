@@ -1,3 +1,5 @@
+// Interface héritée BME680, conservée mais absente du chemin d'acquisition de la maquette BME280.
+// Init/ReadChipId vérifient l'identification I2C ; ReadEnvironment renvoie actuellement faux.
 #ifndef GROVE_BME680_H
 #define GROVE_BME680_H
 
