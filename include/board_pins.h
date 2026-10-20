@@ -56,7 +56,7 @@
 #define SD_SPI_HANDLE hspi1
 
 /* Options du montage réel : les broches de la base restent inchangées. */
-#define RED_IS_BUTTON1 1
+#define RED_IS_BUTTON1 0
 #define BUTTON_ACTIVE_LOW 1
 #define GPS_SWAP_PINS 1
 #define GPS_UART_HANDLE huart4

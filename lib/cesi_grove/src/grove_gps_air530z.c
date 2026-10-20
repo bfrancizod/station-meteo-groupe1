@@ -1,6 +1,7 @@
 /* NMEA GGA : checksum, champs vides conservés et coordonnées vérifiées.
  * Compatible GP/GN et autres talkers ; aucune position périmée n'est publiée. */
 #include "grove_gps_air530z.h"
+#include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
@@ -99,8 +100,19 @@ void GroveGPS_Reset(void) {
     }
 }
 void GroveGPS_Process(void) {
+    /* GPS_DIAG_TEMP */
+    static uint32_t diag_bytes, diag_tick;
+    uint32_t now = HAL_GetTick();
+    if (now - diag_tick >= 5000) {
+        diag_tick = now;
+        printf("[GPS diag] octets=%lu phrases=%lu derniere=%.100s\r\n",
+               (unsigned long)diag_bytes,
+               (unsigned long)line_sequence,
+               recent_line[0] ? recent_line : "(aucune)");
+    }
     int c;
     while ((c = Board_GpsGet()) >= 0) {
+        diag_bytes++;
         if (c == '$') {
             used = 0;
             line[used++] = '$';
