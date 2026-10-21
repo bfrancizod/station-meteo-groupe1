@@ -1,5 +1,8 @@
 # Worldwide Weather Watcher Groupe 1
 
+Les commandes pour compiler, programmer la carte et ouvrir l'affichage sont
+regroupées dans la [fiche de lancement](LANCEMENT.md).
+
 Pour installer le projet dans une VM et afficher les mesures, suivre le
 [guide VirtualBox et tableau de bord graphique](docs/INSTALLATION_VIRTUALBOX.md).
 Il couvre l'installation Linux, le passage USB du ST-LINK, les permissions,
