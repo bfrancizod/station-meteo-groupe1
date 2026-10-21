@@ -17,3 +17,5 @@ cc -std=c11 -Wall -Wextra -Wno-unused-parameter -Wno-misleading-indentation \
  tests/test_app.c src/app.c src/config.c src/time_service.c src/format.c \
  -lm -o .test-build/test_app
 .test-build/test_app
+# Refaire les scénarios avec TIMEOUT=10 pour vérifier l'attente GPS indépendante de 15 s.
+.test-build/test_app --short-timeout

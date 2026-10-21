@@ -10,13 +10,17 @@ typedef enum { MODE_STANDARD, MODE_CONFIGURATION, MODE_MAINTENANCE, MODE_ECONOMI
 // OK = exploitable, DISABLED = désactivé, SKIPPED = ignoré volontairement (GPS économique),
 // TIMEOUT = attente non satisfaite, IO_ERROR = erreur d'accès, INVALID = mesure incohérente.
 // IO_ERROR existe dans le type mais n'est pas affecté par le cycle actuel d'app.c.
+// SIMULATED distingue le remplacement GPS de soutenance d'une vraie mesure OK.
 typedef enum {
     VALUE_OK,
     VALUE_DISABLED,
     VALUE_SKIPPED,
     VALUE_TIMEOUT,
     VALUE_IO_ERROR,
-    VALUE_INVALID
+    VALUE_INVALID,
+    // Valeur de remplacement explicitement marquée, réservée au GPS de démonstration.
+    // Ajoutée en fin d'énumération pour conserver les valeurs numériques des anciens statuts.
+    VALUE_SIMULATED
 } ValueStatus;
 // Ces indices correspondent aux cases status/timeout_count et aux bits d'erreur par capteur.
 // SENSOR_COUNT est le nombre de capteurs logiques, pas un capteur supplémentaire.

@@ -93,6 +93,16 @@ les autres inscrivent NA. Le module reste alimenté et les octets sont drainés 
 éviter une saturation ; aucune commande spécifique de mise en veille SIM28 n'est
 envoyée.
 
+Pour une soutenance en intérieur, la commande temporaire `GPS_DEMO=1` permet de
+remplacer une position GPS absente après **15 secondes par acquisition** par
+`0.000000 (DEMO)` en latitude et longitude. Seul le défaut GPS est effacé ; les
+autres erreurs restent signalées. Une position réelle obtenue avant ce remplacement
+est prioritaire. Les cycles économiques sans demande GPS conservent `NA`.
+`GPS_DEMO=0` ou un redémarrage rétablit le fonctionnement normal décrit ci-dessus.
+Cette option ne modifie pas la configuration Flash ni le délai `TIMEOUT` des
+autres capteurs. Consulter la [procédure de soutenance](../LANCEMENT.md#soutenance--continuer-sans-position-gps-après-15-secondes)
+pour l'activer puis ouvrir le tableau de bord avec les mesures réelles.
+
 ### RTC et configuration
 
 Démarrer en maintenant le rouge pour entrer en configuration. Si l'horloge est

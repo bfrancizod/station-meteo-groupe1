@@ -10,6 +10,7 @@
 int Measurement_Format(const Measurement *m, char *out, unsigned size) {
     // NA représente ici toutes les valeurs non OK : absentes, désactivées, ignorées
     // volontairement ou incohérentes. Le texte seul ne permet pas de distinguer ces causes.
+    // Exception explicite : le GPS simulé est affiché avec la mention (DEMO).
     char stamp[32] = "NA", t[24] = "NA", h[24] = "NA", p[24] = "NA", l[16] = "NA", lat[24] = "NA",
          lon[24] = "NA";
     if (m->date_valid)
@@ -23,9 +24,12 @@ int Measurement_Format(const Measurement *m, char *out, unsigned size) {
         snprintf(p, sizeof(p), "%.2f", (double)m->pressure);
     if (m->status[SENSOR_LIGHT] == VALUE_OK)
         snprintf(l, sizeof(l), "%u", m->light);
-    if (m->status[SENSOR_GPS] == VALUE_OK) {
-        snprintf(lat, sizeof(lat), "%.6f", m->gps.lat);
-        snprintf(lon, sizeof(lon), "%.6f", m->gps.lon);
+    if (m->status[SENSOR_GPS] == VALUE_OK || m->status[SENSOR_GPS] == VALUE_SIMULATED) {
+        // Le marqueur reste dans les deux champs partagés entre console et SD :
+        // les huit colonnes sont conservées, et une vraie position 0,0 reste sans marqueur.
+        const char *suffix = m->status[SENSOR_GPS] == VALUE_SIMULATED ? " (DEMO)" : "";
+        snprintf(lat, sizeof(lat), "%.6f%s", m->gps.lat, suffix);
+        snprintf(lon, sizeof(lon), "%.6f%s", m->gps.lon, suffix);
     }
     const char *mode = m->mode == MODE_STANDARD   ? "STANDARD"
                        : m->mode == MODE_ECONOMIC ? "ECONOMIQUE"

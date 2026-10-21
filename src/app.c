@@ -14,6 +14,8 @@
 #include <string.h>
 #define VERSION "WWW-G1-1.1.0"
 #define LOT "CESI-G1-2026"
+// Délai du GPS en soutenance, en millisecondes, indépendant du TIMEOUT des autres capteurs.
+#define GPS_DEMO_TIMEOUT_MS 15000u
 // static au niveau du fichier rend ces variables privées à app.c ; elles persistent
 // entre les appels. Sans initialiseur explicite, elles démarrent à zéro.
 static Config cfg;
@@ -25,6 +27,9 @@ static uint32_t next_cycle, last_activity, cycle_start, env_due, light_due;
 static uint32_t errors, sd_error;
 // cycle : collecte en cours ; env_ok : pilote initialisé ; env_pending : conversion lancée.
 static bool initialized, cycle, env_ok, env_pending, request_gps, force_measure;
+// Option temporaire de soutenance : jamais enregistrée dans la configuration Flash.
+// Elle est activée par GPS_DEMO=1 et revient à faux à chaque démarrage dans App_Init.
+static bool gps_demo;
 static unsigned economic_cycle;
 static Measurement measurement;
 // Un compteur et deux bits de diagnostic par capteur évitent qu'un capteur rétabli
@@ -263,7 +268,7 @@ static void execute(char *line) {
     if (!*line)
         return;
     if (!strcmp(line, "HELP")) {
-        output("HELP STATUS SHOW VERSION I2C MEASURE\r\nConfiguration : PARAM=valeur RESET "
+        output("HELP STATUS SHOW VERSION I2C MEASURE GPS_DEMO=0/1\r\nConfiguration : PARAM=valeur RESET "
                "CLOCK=HH:MM:SS DATE=MM,JJ,AAAA DAY=MON\r\n");
         return;
     }
@@ -285,10 +290,10 @@ static void execute(char *line) {
             errors |= ERR_RTC;
         snprintf(
             s, sizeof(s),
-            "MODE=%s ERR=0x%02lX RAW_PA10=%u RAW_PB3=%u RED=%u GREEN=%u RX_TX_LOST=%lu RTC=%s\r\n",
+            "MODE=%s ERR=0x%02lX RAW_PA10=%u RAW_PB3=%u RED=%u GREEN=%u RX_TX_LOST=%lu RTC=%s GPS_DEMO=%u\r\n",
             mode_name(), (unsigned long)errors, HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_10),
             HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_3), Board_Red(), Board_Green(),
-            (unsigned long)Board_RxOverflows(), rtc ? "OK" : "INVALIDE/ABSENTE");
+            (unsigned long)Board_RxOverflows(), rtc ? "OK" : "INVALIDE/ABSENTE", (unsigned)gps_demo);
         output(s);
         if (rtc) {
             snprintf(s, sizeof(s), "RTC=%04u-%02u-%02u %02u:%02u:%02u\r\n", d.year, d.month, d.day,
@@ -319,6 +324,27 @@ static void execute(char *line) {
             force_measure = true;
             output("Mesure de diagnostic demandee\r\n");
         }
+        return;
+    }
+    // Cette option reste accessible dans tous les modes : elle ne sauvegarde aucun réglage.
+    if (!strncmp(line, "GPS_DEMO=", 9)) {
+        // Les neuf caractères du préfixe sont suivis uniquement de 0 ou de 1.
+        const char *value = line + 9;
+        if (strcmp(value, "0") && strcmp(value, "1")) {
+            output("ERREUR : GPS_DEMO=0 ou GPS_DEMO=1\r\n");
+            return;
+        }
+        bool enabled = *value == '1';
+        if (gps_demo != enabled) {
+            gps_demo = enabled;
+            // Repartir d'une acquisition complète avec le nouveau délai, sans publier le brouillon.
+            cycle = false;
+            force_measure = false;
+            next_cycle = HAL_GetTick();
+        }
+        // Répéter la même commande confirme l'état sans recommencer l'attente des 15 s.
+        output(gps_demo ? "GPS DEMONSTRATION active : position fictive 0,0 apres 15 s sans position\r\n"
+                        : "GPS DEMONSTRATION desactive : fonctionnement normal\r\n");
         return;
     }
     if (mode != MODE_CONFIGURATION) {
@@ -449,6 +475,7 @@ static void finish_cycle(uint32_t now) {
             sensor_access &= ~bit;
             timeout_count[i] = 0;
         } else {
+            // OK et SIMULATED résolvent ce capteur seulement ; les autres gardent leurs défauts.
             sensor_access &= ~bit;
             sensor_invalid &= ~bit;
             timeout_count[i] = 0;
@@ -513,7 +540,12 @@ static void finish_cycle(uint32_t now) {
 // Fait progresser les capteurs attendus ; now est en ms et aucune valeur n'est renvoyée.
 // La collecte est découpée en étapes, même si chaque transaction HAL reste synchrone et bornée.
 static void acquisition(uint32_t now) {
-    if (cfg.lumin && measurement.status[SENSOR_LIGHT] == VALUE_TIMEOUT &&
+    // La soustraction non signée reste valide si le compteur milliseconde reboucle.
+    uint32_t elapsed = now - cycle_start;
+    uint32_t timeout_ms = (uint32_t)cfg.timeout_s * 1000u;
+    // Prolonger l'attente GPS à 15 s ne doit pas prolonger celle des autres capteurs.
+    bool sensors_active = !gps_demo || elapsed <= timeout_ms;
+    if (sensors_active && cfg.lumin && measurement.status[SENSOR_LIGHT] == VALUE_TIMEOUT &&
         (int32_t)(now - light_due) >= 0) {
         uint16_t raw = Board_Light();
         light_due = now + 1000;
@@ -527,7 +559,7 @@ static void acquisition(uint32_t now) {
     bool env_needed = (cfg.temp && measurement.status[SENSOR_TEMP] == VALUE_TIMEOUT) ||
                       (cfg.hygr && measurement.status[SENSOR_HUM] == VALUE_TIMEOUT) ||
                       (cfg.pressure && measurement.status[SENSOR_PRESS] == VALUE_TIMEOUT);
-    if (env_needed && (int32_t)(now - env_due) >= 0) {
+    if (sensors_active && env_needed && (int32_t)(now - env_due) >= 0) {
         if (!env_ok)
             env_ok = Env_Init();
         if (!env_pending) {
@@ -565,13 +597,33 @@ static void acquisition(uint32_t now) {
     if (request_gps && measurement.status[SENSOR_GPS] == VALUE_TIMEOUT &&
         Gps_Take(cycle_start, &measurement.gps))
         measurement.status[SENSOR_GPS] = VALUE_OK;
+    // Essayer la vraie position avant le remplacement, même à l'échéance des 15 secondes.
+    // Le pilote GPS reste inchangé : aucune position fictive n'entre dans son cache.
+    if (gps_demo && request_gps && measurement.status[SENSOR_GPS] == VALUE_TIMEOUT &&
+        elapsed >= GPS_DEMO_TIMEOUT_MS) {
+        // Remet aussi qualité et satellites à zéro : aucune réception valide n'est inventée.
+        measurement.gps = (GpsFix){0};
+        measurement.status[SENSOR_GPS] = VALUE_SIMULATED;
+        // Effacer uniquement le défaut GPS et son historique d'échecs, même si un autre
+        // capteur retarde encore la fin du cycle. La LED conserve les autres erreurs.
+        uint8_t bit = 1u << SENSOR_GPS;
+        sensor_access &= ~bit;
+        sensor_invalid &= ~bit;
+        timeout_count[SENSOR_GPS] = 0;
+        errors &= ~ERR_GPS;
+        output("GPS DEMONSTRATION : position fictive 0,0 (DEMO), aucune position satellite\r\n");
+    }
     bool waiting = false;
-    for (unsigned i = 0; i < SENSOR_COUNT; i++)
-        if (measurement.status[i] == VALUE_TIMEOUT)
+    for (unsigned i = 0; i < SENSOR_COUNT; i++) {
+        // Une attente expirée ne bloque plus la publication ; en démonstration seul
+        // le GPS prend le délai fixe de 15 s. Un GPS ignoré en économie reste SKIPPED.
+        uint32_t deadline = gps_demo && i == SENSOR_GPS ? GPS_DEMO_TIMEOUT_MS : timeout_ms;
+        if (measurement.status[i] == VALUE_TIMEOUT && elapsed < deadline)
             waiting = true;
-    // Dès que tout est résolu, ou que le délai global expire, publier une seule mesure.
+    }
+    // Dès que chaque capteur a répondu ou épuisé son délai, publier une seule mesure.
     // Les capteurs encore en TIMEOUT seront rendus sous la forme NA par Measurement_Format.
-    if (!waiting || now - cycle_start >= (uint32_t)cfg.timeout_s * 1000)
+    if (!waiting)
         finish_cycle(now);
 }
 // Appel unique après Global_Init : recharge les réglages, choisit le mode initial,
@@ -579,6 +631,7 @@ static void acquisition(uint32_t now) {
 // Le montage SD est différé dans ce mode, mais l'initialisation BME280 a tout de même lieu.
 void App_Init(void) {
     GroveRGB_Init();
+    gps_demo = false;
     Config_Defaults(&cfg);
     bool stored = Nv_Load(&cfg);
     uint32_t now = HAL_GetTick();

@@ -63,6 +63,14 @@ int main(void) {
     assert(Measurement_Format(&m, record, sizeof(record)) > 0);
     assert(!strcmp(record, "NA;STANDARD;NA;NA;NA;0;NA;NA\n"));
     assert(Measurement_Format(&m, record, 5) < 0);
+    // Les coordonnées fictives restent repérables dans le format commun SD/console.
+    m.status[SENSOR_GPS] = VALUE_SIMULATED;
+    assert(Measurement_Format(&m, record, sizeof(record)) > 0);
+    assert(!strcmp(record, "NA;STANDARD;NA;NA;NA;0;0.000000 (DEMO);0.000000 (DEMO)\n"));
+    // Une position réelle à l'origine ne doit jamais être marquée comme fictive.
+    m.status[SENSOR_GPS] = VALUE_OK;
+    assert(Measurement_Format(&m, record, sizeof(record)) > 0);
+    assert(!strcmp(record, "NA;STANDARD;NA;NA;NA;0;0.000000;0.000000\n"));
     nmea("GPGGA,123519,1e300,N,01131.000,E,1,08,1,0,M,0,M,,", line);
     assert(!Gps_Parse(line, &g));
     /* Compteurs uint32_t : les comparaisons restent valides au débordement. */

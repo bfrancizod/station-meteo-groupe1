@@ -165,6 +165,47 @@ de revenir au tableau de bord.
 Un seul programme doit utiliser le port : console, moniteur PlatformIO ou
 tableau de bord.
 
+### Soutenance : continuer sans position GPS après 15 secondes
+
+Compiler puis téléverser la version contenant cette option (étapes 4 et 5).
+Dans la console PlatformIO ou miniterm, saisir les commandes suivantes, chacune
+validée par Entrée ; ce sont des commandes de la station, pas du terminal Linux :
+
+```text
+GPS_DEMO=1
+STATUS
+```
+
+`GPS_DEMO=1` active une option temporaire, disponible dans tous les modes.
+Changer cette option annule l'acquisition en cours et en démarre une nouvelle,
+sauf en configuration où les acquisitions restent suspendues.
+Si aucune position satellite valide n'est obtenue pendant les **15 secondes de
+l'acquisition**, la station utilise une latitude et une longitude fictives de
+**0,000000°**, affichées avec la mention **(DEMO)**. Le délai général `TIMEOUT`
+continue de s'appliquer aux autres capteurs.
+
+Seule l'erreur GPS est effacée : la LED reprend la couleur fixe du mode si aucun
+autre défaut n'est présent. Les défauts RTC, SD et autres capteurs restent signalés.
+Une vraie position reçue avant le remplacement est toujours prioritaire ; le GPS
+est réessayé à chaque nouvelle acquisition qui le demande. En économie, les
+acquisitions qui ignorent volontairement le GPS conservent `NA`.
+
+Pour présenter les courbes, passer en maintenance avec le bouton rouge, quitter
+la console, puis ouvrir le tableau de bord sans appuyer sur RESET.
+Les mesures des autres capteurs restent réelles. Le tableau de bord indique
+**GPS : DÉMONSTRATION** pour les coordonnées fictives ; la SD et la console
+conservent `(DEMO)`, et l'export CSV les identifie par la source `SERIE_GPS_DEMO`.
+Cette option diffère de `--demo`, qui simule tout le tableau de bord sans carte.
+
+Pour revenir au fonctionnement GPS normal :
+
+```text
+GPS_DEMO=0
+```
+
+L'option est **désactivée au redémarrage** et n'est pas enregistrée en Flash.
+`STATUS` affiche `GPS_DEMO=1` lorsqu'elle est active et `GPS_DEMO=0` sinon.
+
 ## 8. Lancer les tests
 
 Depuis la racine du projet :

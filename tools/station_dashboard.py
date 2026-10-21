@@ -43,6 +43,12 @@ def number(value):
         return None
 
 
+# Reconnaît les coordonnées de remplacement sans confondre une vraie position 0,0.
+# Les champs restent textuels après le parseur ; number peut en extraire le nombre séparément.
+def gps_is_simulated(sample):
+    return any("(DEMO)" in sample[key] for key in ("Latitude", "Longitude"))
+
+
 # Petit assembleur avec mémoire : un seul bloc lisible peut être en cours à la fois.
 # Il traite du texte indépendamment de la fenêtre et du port, ce qui permet les tests intégrés.
 class Parser:
@@ -314,6 +320,9 @@ class Dashboard:
         lat, lon = number(sample["Latitude"]), number(sample["Longitude"])
         if lat is None or lon is None:
             self.gps.set("GPS : position indisponible pour cette acquisition")
+        elif gps_is_simulated(sample):
+            # Seule la position est fictive : les quatre cartes de mesures restent réelles.
+            self.gps.set(f"GPS : DÉMONSTRATION • position fictive {lat:.6f}°, {lon:.6f}°")
         else:
             self.gps.set(f"GPS : latitude {lat:.6f}° • longitude {lon:.6f}°")
         self.draw()
@@ -418,7 +427,10 @@ class Dashboard:
                     # La colonne Source distingue les données simulées des données série,
                     # y compris une fois le CSV sorti de l'application.
                     for timestamp, sample in self.history:
-                        writer.writerow(["SIMULATION" if self.demo else "SERIE",
+                        # Distinguer la simulation complète du PC et le seul GPS remplacé sur carte.
+                        source = ("SIMULATION" if self.demo else
+                                  "SERIE_GPS_DEMO" if gps_is_simulated(sample) else "SERIE")
+                        writer.writerow([source,
                             datetime.fromtimestamp(timestamp).isoformat()] + [sample[k] for k in KEYS])
             except OSError as error:
                 messagebox.showerror("Export impossible", str(error))
@@ -460,6 +472,15 @@ def self_test():
     parser.feed("Temperature : 12.0")
     assert parser.feed("Longitude : NA") is None
     assert parser.feed(row) == expected
+    assert not gps_is_simulated(expected)
+    # Vérifier les deux formats avec le marqueur, puis une vraie position nulle sans marqueur.
+    demo = parser.feed(row.rsplit(";", 2)[0] + ";0.000000 (DEMO);0.000000 (DEMO)")
+    assert gps_is_simulated(demo) and number(demo["Latitude"]) == 0
+    for key, value in demo.items():
+        result = parser.feed(f"{key:13} : {value}")
+    assert result == demo and gps_is_simulated(result)
+    real = dict(demo, Latitude="0.000000", Longitude="0.000000")
+    assert not gps_is_simulated(real)
     print("OK : formats CSV et lisible, unités, NA, blocs incomplets et messages intercalés.")
 
 
