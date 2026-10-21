@@ -1,5 +1,9 @@
 # Mise en service et explication du programme
 
+Pour préparer la VM Linux, connecter le ST-LINK à VirtualBox et utiliser le
+tableau de bord Python, consulter le
+[guide VirtualBox et affichage graphique](INSTALLATION_VIRTUALBOX.md).
+
 ## 1 Vérifier la maquette avant de téléverser
 
 La photographie finale doit montrer les étiquettes des prises Grove, le sélecteur

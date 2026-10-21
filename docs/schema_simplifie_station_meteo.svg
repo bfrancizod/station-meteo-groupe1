@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1180" viewBox="0 0 2000 1180">
+<defs><marker id="a" markerUnits="userSpaceOnUse" markerWidth="20" markerHeight="20" refX="18" refY="10" orient="auto-start-reverse"><path d="M0,0 L18,10 L0,20 Z" fill="#40566f"/></marker></defs>
+<rect width="2000" height="1180" fill="#f4f7fb"/>
+<text x="1000" y="70" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="48" fill="#19324b" font-weight="700">COMMENT FONCTIONNE LA STATION MÉTÉO ?</text>
+<text x="1000" y="119" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="31" fill="#64758a" font-weight="400">Vue simplifiée des principaux fichiers</text>
+<rect x="600" y="170" width="800" height="120" rx="24" fill="#eaf2ff" stroke="#92b5e0" stroke-width="3"/>
+<text x="1000" y="219" text-anchor="middle" font-family="DejaVu Sans Mono, monospace" font-size="35" fill="#205996" font-weight="700">main.c + setup.c</text>
+<text x="1000" y="262" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="28" fill="#19324b" font-weight="400">Démarrent le programme et préparent la carte.</text>
+<polyline points="1000,292 1000,362" fill="none" stroke="#40566f" stroke-width="5" stroke-linejoin="round" marker-end="url(#a)"/>
+<text x="1105" y="337" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="24" fill="#64758a" font-weight="400">Démarrage</text>
+<rect x="650" y="370" width="700" height="180" rx="24" fill="#eee8fa" stroke="#ad91d1" stroke-width="3"/>
+<text x="1000" y="421" text-anchor="middle" font-family="DejaVu Sans Mono, monospace" font-size="44" fill="#69419b" font-weight="700">app.c</text>
+<text x="1000" y="470" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="30" fill="#69419b" font-weight="700">LE CHEF D’ORCHESTRE</text>
+<text x="1000" y="514" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="27" fill="#19324b" font-weight="400">Choisit le mode et organise les acquisitions.</text>
+<rect x="70" y="390" width="480" height="140" rx="24" fill="#ffffff" stroke="#d2deea" stroke-width="3"/>
+<text x="310" y="432" text-anchor="middle" font-family="DejaVu Sans Mono, monospace" font-size="25" fill="#205996" font-weight="700">config.c + nv_store.c</text>
+<text x="310" y="477" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="28" fill="#19324b" font-weight="400">Réglages et sauvegarde</text>
+<text x="310" y="513" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="28" fill="#19324b" font-weight="400">dans la mémoire Flash.</text>
+<polyline points="558,454 642,454" fill="none" stroke="#40566f" stroke-width="5" stroke-linejoin="round" marker-end="url(#a)" marker-start="url(#a)"/>
+<text x="600" y="378" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="22" fill="#64758a" font-weight="400">Réglages</text>
+<rect x="1450" y="390" width="480" height="140" rx="24" fill="#fff6e5" stroke="#e4c27d" stroke-width="3"/>
+<text x="1690" y="435" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="32" fill="#916012" font-weight="700">BOUTONS + LED</text>
+<text x="1690" y="479" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="28" fill="#19324b" font-weight="400">Changement de mode</text>
+<text x="1690" y="515" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="28" fill="#19324b" font-weight="400">et indication des erreurs.</text>
+<polyline points="1358,454 1442,454" fill="none" stroke="#40566f" stroke-width="5" stroke-linejoin="round" marker-end="url(#a)" marker-start="url(#a)"/>
+<text x="1400" y="378" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="23" fill="#64758a" font-weight="400">État</text>
+<polyline points="355,692 355,615 820,615 820,558" fill="none" stroke="#40566f" stroke-width="5" stroke-linejoin="round" marker-end="url(#a)"/>
+<text x="535" y="598" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="27" fill="#087d79" font-weight="700">Mesures</text>
+<polyline points="1000,558 1000,692" fill="none" stroke="#40566f" stroke-width="5" stroke-linejoin="round" marker-end="url(#a)"/>
+<text x="1115" y="632" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="25" fill="#a26616" font-weight="700">Enregistrement</text>
+<polyline points="1180,558 1180,580 1655,580 1655,692" fill="none" stroke="#40566f" stroke-width="5" stroke-linejoin="round" marker-end="url(#a)"/>
+<text x="1570" y="563" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="26" fill="#205996" font-weight="700">Affichage en maintenance</text>
+<rect x="70" y="700" width="570" height="270" rx="24" fill="#e9f6f0" stroke="#81b8a4" stroke-width="3"/>
+<text x="355" y="753" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="35" fill="#087d79" font-weight="700">CAPTEURS</text>
+<text x="355" y="805" text-anchor="middle" font-family="DejaVu Sans Mono, monospace" font-size="25" fill="#19324b" font-weight="400">environment.c · gps.c</text>
+<text x="355" y="846" text-anchor="middle" font-family="DejaVu Sans Mono, monospace" font-size="25" fill="#19324b" font-weight="400">time_service.c + pilotes Grove</text>
+<text x="355" y="897" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="27" fill="#19324b" font-weight="400">Température, humidité, pression,</text>
+<text x="355" y="937" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="27" fill="#19324b" font-weight="400">luminosité, position et heure.</text>
+<rect x="715" y="700" width="570" height="270" rx="24" fill="#fff4e3" stroke="#e0b36a" stroke-width="3"/>
+<text x="1000" y="753" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="35" fill="#a26616" font-weight="700">CARTE SD</text>
+<text x="1000" y="805" text-anchor="middle" font-family="DejaVu Sans Mono, monospace" font-size="27" fill="#19324b" font-weight="400">storage.c + format.c</text>
+<text x="1000" y="846" text-anchor="middle" font-family="DejaVu Sans Mono, monospace" font-size="27" fill="#19324b" font-weight="400">FatFs + pilotes SD</text>
+<text x="1000" y="897" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="27" fill="#19324b" font-weight="400">Enregistrent les mesures datées</text>
+<text x="1000" y="937" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="27" fill="#19324b" font-weight="400">dans les fichiers .LOG.</text>
+<rect x="1360" y="700" width="570" height="270" rx="24" fill="#eaf2ff" stroke="#92b5e0" stroke-width="3"/>
+<text x="1645" y="753" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="34" fill="#205996" font-weight="700">TABLEAU DE BORD PC</text>
+<text x="1645" y="805" text-anchor="middle" font-family="DejaVu Sans Mono, monospace" font-size="25" fill="#19324b" font-weight="400">tools/station_dashboard.py</text>
+<text x="1645" y="846" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="26" fill="#19324b" font-weight="400">Reçoit les données par USB / série.</text>
+<text x="1645" y="897" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="26" fill="#19324b" font-weight="400">Affiche les valeurs et les courbes,</text>
+<text x="1645" y="937" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="26" fill="#19324b" font-weight="400">puis permet leur export en CSV.</text>
+<text x="1000" y="1048" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="37" fill="#19324b" font-weight="700">Capteurs → app.c → carte SD ou tableau de bord PC</text>
+<text x="1000" y="1102" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="27" fill="#64758a" font-weight="400">Standard / économie : mesures sur SD · Maintenance : mesures détaillées sur le PC</text>
+<text x="1000" y="1150" text-anchor="middle" font-family="DejaVu Sans, sans-serif" font-size="26" fill="#64758a" font-weight="400">Fichiers .c : traitements · Fichiers .h : déclarations partagées</text>
+</svg>

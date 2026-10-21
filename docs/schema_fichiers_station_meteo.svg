@@ -1,0 +1,262 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3600" height="3280" viewBox="0 0 3600 3280">
+<defs><marker id="arrow" markerUnits="userSpaceOnUse" markerWidth="20" markerHeight="18" refX="18" refY="9" orient="auto-start-reverse"><path d="M0,0 L18,9 L0,18 Z" fill="#375475"/></marker></defs>
+<rect width="3600" height="3280" fill="#f2f5fa"/>
+<text x="60" y="85" font-family="DejaVu Sans,sans-serif" font-size="62" font-weight="800" fill="#18324d" text-anchor="start">STATION MÉTÉO — LA CARTE DES FICHIERS</text>
+<text x="62" y="138" font-family="DejaVu Sans,sans-serif" font-size="32" font-weight="400" fill="#4e647a" text-anchor="start">CESI · NUCLEO-L476RG · liens vérifiés dans le code du projet</text>
+<text x="3540" y="79" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#4e647a" text-anchor="end">→ appelle / utilise</text>
+<text x="3540" y="122" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#4e647a" text-anchor="end">↔ liaison matérielle ou série</text>
+<text x="70" y="185" font-family="DejaVu Sans,sans-serif" font-size="29" font-weight="700" fill="#2563a5" text-anchor="start">1  ORDRE DU DÉMARRAGE — orchestré par main.c</text>
+<rect x="60" y="210" width="700" height="126" rx="20" fill="#f8fbff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="80" y="250" font-family="DejaVu Sans Mono,monospace" font-size="29" font-weight="700" fill="#2563a5" text-anchor="start">src/main.c</text>
+<text x="80" y="289" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Point d’entrée puis boucle infinie</text>
+<rect x="820" y="210" width="810" height="126" rx="20" fill="#f8fbff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="840" y="250" font-family="DejaVu Sans Mono,monospace" font-size="29" font-weight="700" fill="#2563a5" text-anchor="start">src/setup.c : Global_Init()</text>
+<text x="840" y="289" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Configure horloges, broches et périphériques</text>
+<rect x="1690" y="210" width="810" height="126" rx="20" fill="#f8fbff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="1710" y="250" font-family="DejaVu Sans Mono,monospace" font-size="29" font-weight="700" fill="#2563a5" text-anchor="start">src/app.c : App_Init()</text>
+<text x="1710" y="289" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Charge les réglages et prépare la station</text>
+<rect x="2560" y="210" width="980" height="126" rx="20" fill="#f8fbff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="2580" y="250" font-family="DejaVu Sans Mono,monospace" font-size="29" font-weight="700" fill="#2563a5" text-anchor="start">App_Process(HAL_GetTick())</text>
+<text x="2580" y="289" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Répété dans la boucle principale, sans fin</text>
+<polyline points="760,271 814,271" fill="none" stroke="#375475" stroke-width="4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="1630,271 1684,271" fill="none" stroke="#375475" stroke-width="4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="2500,271 2554,271" fill="none" stroke="#375475" stroke-width="4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="60" y="380" width="3480" height="205" rx="20" fill="#eee8f8" stroke="#cbb9e3" stroke-width="2"/>
+<text x="90" y="432" font-family="DejaVu Sans,sans-serif" font-size="37" font-weight="800" fill="#7044a0" text-anchor="start">2  src/app.c — LE SUPERVISEUR</text>
+<text x="90" y="480" font-family="DejaVu Sans,sans-serif" font-size="32" font-weight="400" fill="#18324d" text-anchor="start">Modes · boutons · commandes série · déclenchement des mesures · délais · erreurs · couleur de la LED</text>
+<text x="90" y="531" font-family="DejaVu Sans,sans-serif" font-size="31" font-weight="400" fill="#18324d" text-anchor="start">Un cycle : préparer → collecter → valider → lire la RTC → publier la mesure</text>
+<text x="2520" y="570" font-family="DejaVu Sans,sans-serif" font-size="25" font-weight="400" fill="#7044a0" text-anchor="start">Measurement = date + mode + valeurs + statuts</text>
+<polyline points="1800,585 1800,620 620,620 620,650" fill="none" stroke="#375475" stroke-width="4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="1800,585 1800,650" fill="none" stroke="#375475" stroke-width="4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="1800,585 1800,620 2980,620 2980,650" fill="none" stroke="#375475" stroke-width="4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="60" y="660" width="1120" height="1120" rx="20" fill="#ffffff" stroke="#d5dfe9" stroke-width="2"/>
+<path d="M80,660 H1160 Q1180,660 1180,680 V738 H60 V680 Q60,660 80,660 Z" fill="#087f80"/>
+<text x="88" y="711" font-family="DejaVu Sans,sans-serif" font-size="34" font-weight="700" fill="#ffffff" text-anchor="start">3  CAPTEURS, BOUTONS ET LED</text>
+<text x="88" y="778" font-family="DejaVu Sans,sans-serif" font-size="26" font-weight="400" fill="#4e647a" text-anchor="start">Services dans src/ · pilotes dans lib/cesi_grove/src/</text>
+<rect x="88" y="800" width="280" height="105" rx="20" fill="#f8fbff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="108" y="840" font-family="DejaVu Sans Mono,monospace" font-size="23" font-weight="700" fill="#087f80" text-anchor="start">environment.c</text>
+<text x="108" y="879" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Adapte °C, %, hPa</text>
+<rect x="410" y="800" width="410" height="105" rx="20" fill="#f8fbff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="430" y="840" font-family="DejaVu Sans Mono,monospace" font-size="25" font-weight="700" fill="#087f80" text-anchor="start">grove_bme280.c</text>
+<text x="430" y="879" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Pilote du composant</text>
+<rect x="866" y="800" width="282" height="105" rx="20" fill="#e6f4ef" stroke="#d5dfe9" stroke-width="2"/>
+<text x="886" y="840" font-family="DejaVu Sans Mono,monospace" font-size="25" font-weight="700" fill="#087f80" text-anchor="start">BME280</text>
+<text x="886" y="879" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">I2C</text>
+<polyline points="370,849 404,849" fill="none" stroke="#375475" stroke-width="4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="825,849 860,849" fill="none" stroke="#375475" stroke-width="4" stroke-linejoin="round" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="90" y="944" font-family="DejaVu Sans,sans-serif" font-size="26" font-weight="400" fill="#4e647a" text-anchor="start">grove_bme280.c utilise lib/bosch_bme280/ : compensation.</text>
+<rect x="88" y="975" width="280" height="105" rx="20" fill="#f8fbff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="108" y="1015" font-family="DejaVu Sans Mono,monospace" font-size="23" font-weight="700" fill="#087f80" text-anchor="start">gps.c</text>
+<text x="108" y="1054" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Adapte la position</text>
+<rect x="410" y="975" width="410" height="105" rx="20" fill="#f8fbff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="430" y="1015" font-family="DejaVu Sans Mono,monospace" font-size="25" font-weight="700" fill="#087f80" text-anchor="start">grove_gps_air530z.c</text>
+<text x="430" y="1054" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Pilote du composant</text>
+<rect x="866" y="975" width="282" height="105" rx="20" fill="#e6f4ef" stroke="#d5dfe9" stroke-width="2"/>
+<text x="886" y="1015" font-family="DejaVu Sans Mono,monospace" font-size="25" font-weight="700" fill="#087f80" text-anchor="start">GPS SIM28</text>
+<text x="886" y="1054" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">UART4 via setup.c</text>
+<polyline points="370,1024 404,1024" fill="none" stroke="#375475" stroke-width="4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="825,1024 860,1024" fill="none" stroke="#375475" stroke-width="4" stroke-linejoin="round" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<text x="90" y="1117" font-family="DejaVu Sans,sans-serif" font-size="26" font-weight="400" fill="#4e647a" text-anchor="start">setup.c reçoit les octets ; le pilote valide les phrases GGA.</text>
+<rect x="88" y="1145" width="280" height="105" rx="20" fill="#f8fbff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="108" y="1185" font-family="DejaVu Sans Mono,monospace" font-size="23" font-weight="700" fill="#087f80" text-anchor="start">time_service.c</text>
+<text x="108" y="1224" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Date et calendrier</text>
+<rect x="410" y="1145" width="410" height="105" rx="20" fill="#f8fbff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="430" y="1185" font-family="DejaVu Sans Mono,monospace" font-size="25" font-weight="700" fill="#087f80" text-anchor="start">grove_rtc_ds1307.c</text>
+<text x="430" y="1224" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Pilote du composant</text>
+<rect x="866" y="1145" width="282" height="105" rx="20" fill="#e6f4ef" stroke="#d5dfe9" stroke-width="2"/>
+<text x="886" y="1185" font-family="DejaVu Sans Mono,monospace" font-size="25" font-weight="700" fill="#087f80" text-anchor="start">RTC DS1307</text>
+<text x="886" y="1224" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">I2C</text>
+<polyline points="370,1194 404,1194" fill="none" stroke="#375475" stroke-width="4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="825,1194 860,1194" fill="none" stroke="#375475" stroke-width="4" stroke-linejoin="round" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<rect x="88" y="1290" width="280" height="105" rx="20" fill="#f8fbff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="108" y="1330" font-family="DejaVu Sans Mono,monospace" font-size="23" font-weight="700" fill="#087f80" text-anchor="start">Board_Light()</text>
+<text x="108" y="1369" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Dans setup.c</text>
+<rect x="410" y="1290" width="410" height="105" rx="20" fill="#f8fbff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="430" y="1330" font-family="DejaVu Sans Mono,monospace" font-size="25" font-weight="700" fill="#087f80" text-anchor="start">grove_light.c</text>
+<text x="430" y="1369" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Pilote du composant</text>
+<rect x="866" y="1290" width="282" height="105" rx="20" fill="#e6f4ef" stroke="#d5dfe9" stroke-width="2"/>
+<text x="886" y="1330" font-family="DejaVu Sans Mono,monospace" font-size="25" font-weight="700" fill="#087f80" text-anchor="start">Luminosité</text>
+<text x="886" y="1369" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">ADC</text>
+<polyline points="370,1339 404,1339" fill="none" stroke="#375475" stroke-width="4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="825,1339 860,1339" fill="none" stroke="#375475" stroke-width="4" stroke-linejoin="round" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<rect x="88" y="1435" width="280" height="105" rx="20" fill="#f8fbff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="108" y="1475" font-family="DejaVu Sans Mono,monospace" font-size="23" font-weight="700" fill="#087f80" text-anchor="start">Board_Red/Green()</text>
+<text x="108" y="1514" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Dans setup.c</text>
+<rect x="410" y="1435" width="410" height="105" rx="20" fill="#f8fbff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="430" y="1475" font-family="DejaVu Sans Mono,monospace" font-size="25" font-weight="700" fill="#087f80" text-anchor="start">grove_button.c</text>
+<text x="430" y="1514" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Pilote du composant</text>
+<rect x="866" y="1435" width="282" height="105" rx="20" fill="#e6f4ef" stroke="#d5dfe9" stroke-width="2"/>
+<text x="886" y="1475" font-family="DejaVu Sans Mono,monospace" font-size="25" font-weight="700" fill="#087f80" text-anchor="start">Boutons</text>
+<text x="886" y="1514" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">GPIO</text>
+<polyline points="370,1484 404,1484" fill="none" stroke="#375475" stroke-width="4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="825,1484 860,1484" fill="none" stroke="#375475" stroke-width="4" stroke-linejoin="round" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<rect x="88" y="1580" width="280" height="105" rx="20" fill="#f8fbff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="108" y="1620" font-family="DejaVu Sans Mono,monospace" font-size="25" font-weight="700" fill="#087f80" text-anchor="start">app.c</text>
+<text x="108" y="1659" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Choisit la couleur</text>
+<rect x="410" y="1580" width="410" height="105" rx="20" fill="#f8fbff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="430" y="1620" font-family="DejaVu Sans Mono,monospace" font-size="25" font-weight="700" fill="#087f80" text-anchor="start">grove_rgb.c</text>
+<text x="430" y="1659" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Envoie une trame P9813</text>
+<rect x="866" y="1580" width="282" height="105" rx="20" fill="#e6f4ef" stroke="#d5dfe9" stroke-width="2"/>
+<text x="886" y="1620" font-family="DejaVu Sans Mono,monospace" font-size="25" font-weight="700" fill="#087f80" text-anchor="start">LED RVB</text>
+<text x="886" y="1659" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">GPIO : 2 signaux</text>
+<polyline points="370,1629 404,1629" fill="none" stroke="#375475" stroke-width="4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="825,1629 860,1629" fill="none" stroke="#375475" stroke-width="4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="90" y="1730" font-family="DejaVu Sans,sans-serif" font-size="26" font-weight="400" fill="#4e647a" text-anchor="start">grove_bme680.c / .h : pilote hérité, hors acquisition actuelle.</text>
+<text x="90" y="1763" font-family="DejaVu Sans,sans-serif" font-size="24" font-weight="400" fill="#4e647a" text-anchor="start">Les flèches des services indiquent les appels faits par app.c.</text>
+<rect x="1240" y="660" width="1120" height="1120" rx="20" fill="#ffffff" stroke="#d5dfe9" stroke-width="2"/>
+<path d="M1260,660 H2340 Q2360,660 2360,680 V738 H1240 V680 Q1240,660 1260,660 Z" fill="#b66a17"/>
+<text x="1268" y="711" font-family="DejaVu Sans,sans-serif" font-size="34" font-weight="700" fill="#ffffff" text-anchor="start">4  JOURNAUX ET CARTE SD</text>
+<text x="1270" y="778" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#4e647a" text-anchor="start">app.c appelle storage.c en standard et en économie.</text>
+<rect x="1270" y="800" width="500" height="140" rx="20" fill="#f8fbff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="1290" y="840" font-family="DejaVu Sans Mono,monospace" font-size="29" font-weight="700" fill="#b66a17" text-anchor="start">src/storage.c</text>
+<text x="1290" y="879" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Montage, journal du jour,</text>
+<text x="1290" y="913" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">rotation et copie vérifiée</text>
+<rect x="1830" y="800" width="500" height="140" rx="20" fill="#f8fbff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="1850" y="840" font-family="DejaVu Sans Mono,monospace" font-size="29" font-weight="700" fill="#b66a17" text-anchor="start">src/format.c</text>
+<text x="1850" y="879" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Prépare les 8 champs ;</text>
+<text x="1850" y="913" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">écrit NA si valeur non valide</text>
+<polyline points="1772,865 1822,865" fill="none" stroke="#375475" stroke-width="4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="1842" y="973" font-family="DejaVu Sans,sans-serif" font-size="23" font-weight="400" fill="#4e647a" text-anchor="start">Aussi appelé par app.c en maintenance.</text>
+<rect x="1380" y="1005" width="840" height="112" rx="20" fill="#f8fbff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="1400" y="1045" font-family="DejaVu Sans Mono,monospace" font-size="29" font-weight="700" fill="#b66a17" text-anchor="start">sd_logger_file.c</text>
+<text x="1400" y="1084" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Ouvre → ajoute une ligne → ferme / synchronise</text>
+<polyline points="1515,942 1515,970 1800,970 1800,999" fill="none" stroke="#375475" stroke-width="4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="1380" y="1150" width="840" height="112" rx="20" fill="#f8fbff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="1400" y="1190" font-family="DejaVu Sans Mono,monospace" font-size="29" font-weight="700" fill="#b66a17" text-anchor="start">lib/fatfs/</text>
+<text x="1400" y="1229" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">FatFs gère les fichiers, dossiers et tables FAT</text>
+<polyline points="1800,1119 1800,1143" fill="none" stroke="#375475" stroke-width="4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="1380" y="1295" width="840" height="112" rx="20" fill="#f8fbff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="1400" y="1335" font-family="DejaVu Sans Mono,monospace" font-size="29" font-weight="700" fill="#b66a17" text-anchor="start">src/diskio_spi.c</text>
+<text x="1400" y="1374" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Traduit les accès disque en secteurs de 512 octets</text>
+<polyline points="1800,1264 1800,1288" fill="none" stroke="#375475" stroke-width="4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<rect x="1380" y="1440" width="840" height="103" rx="20" fill="#fff2df" stroke="#d5dfe9" stroke-width="2"/>
+<text x="1400" y="1480" font-family="DejaVu Sans Mono,monospace" font-size="29" font-weight="700" fill="#b66a17" text-anchor="start">SPI1 ↔ carte SD</text>
+<text x="1400" y="1519" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Lecture et écriture des octets</text>
+<polyline points="1800,1409 1800,1433" fill="none" stroke="#375475" stroke-width="4" stroke-linejoin="round" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<rect x="1270" y="1570" width="1060" height="91" rx="20" fill="#fff6e9" stroke="#d5dfe9" stroke-width="2"/>
+<text x="1290" y="1606" font-family="DejaVu Sans,sans-serif" font-size="26" font-weight="700" fill="#b66a17" text-anchor="start">Initialisation : diskio_spi.c → sd_logger.c → SPI1</text>
+<text x="1290" y="1642" font-family="DejaVu Sans,sans-serif" font-size="25" font-weight="400" fill="#18324d" text-anchor="start">CMD0, CMD8… ; une réponse à CMD0 ne valide pas une écriture.</text>
+<text x="1270" y="1700" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="700" fill="#b66a17" text-anchor="start">Actif : AAMMJJ_0.LOG · archives : _1.LOG, _2.LOG…</text>
+<text x="1270" y="1737" font-family="DejaVu Sans,sans-serif" font-size="25" font-weight="400" fill="#4e647a" text-anchor="start">storage.c utilise aussi directement FatFs et appelle format.c.</text>
+<text x="1270" y="1769" font-family="DejaVu Sans,sans-serif" font-size="25" font-weight="400" fill="#4e647a" text-anchor="start">Une date RTC invalide peut produire le bilan SD=ERREUR.</text>
+<rect x="2420" y="660" width="1120" height="1120" rx="20" fill="#ffffff" stroke="#d5dfe9" stroke-width="2"/>
+<path d="M2440,660 H3520 Q3540,660 3540,680 V738 H2420 V680 Q2420,660 2440,660 Z" fill="#2563a5"/>
+<text x="2448" y="711" font-family="DejaVu Sans,sans-serif" font-size="34" font-weight="700" fill="#ffffff" text-anchor="start">5  CONSOLE, PC ET RÉGLAGES</text>
+<rect x="2450" y="800" width="1060" height="112" rx="20" fill="#f8fbff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="2470" y="840" font-family="DejaVu Sans Mono,monospace" font-size="29" font-weight="700" fill="#2563a5" text-anchor="start">src/setup.c ↔ tools/station_dashboard.py</text>
+<text x="2470" y="879" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">USART2 ↔ USB ST-LINK ↔ pyserial · 115200 bauds</text>
+<text x="2450" y="958" font-family="DejaVu Sans,sans-serif" font-size="28" font-weight="700" fill="#2563a5" text-anchor="start">Le fichier Python tourne sur le PC, pas sur le STM32.</text>
+<rect x="2450" y="990" width="1060" height="356" rx="20" fill="#eef5ff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="2474" y="1034" font-family="DejaVu Sans Mono,monospace" font-size="30" font-weight="700" fill="#2563a5" text-anchor="start">tools/station_dashboard.py</text>
+<rect x="2474" y="1062" width="238" height="82" rx="20" fill="#ffffff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="2593" y="1112" font-family="DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#2563a5" text-anchor="middle">Fil série</text>
+<rect x="2730" y="1062" width="238" height="82" rx="20" fill="#ffffff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="2849" y="1112" font-family="DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#2563a5" text-anchor="middle">File d’attente</text>
+<rect x="2986" y="1062" width="238" height="82" rx="20" fill="#ffffff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="3105" y="1112" font-family="DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#2563a5" text-anchor="middle">Parser</text>
+<rect x="3242" y="1062" width="238" height="82" rx="20" fill="#ffffff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="3361" y="1112" font-family="DejaVu Sans,sans-serif" font-size="25" font-weight="700" fill="#2563a5" text-anchor="middle">Tkinter</text>
+<polyline points="2712,1102 2724,1102" fill="none" stroke="#375475" stroke-width="4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="2968,1102 2980,1102" fill="none" stroke="#375475" stroke-width="4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<polyline points="3224,1102 3236,1102" fill="none" stroke="#375475" stroke-width="4" stroke-linejoin="round" marker-end="url(#arrow)"/>
+<text x="2474" y="1191" font-family="DejaVu Sans,sans-serif" font-size="26" font-weight="400" fill="#18324d" text-anchor="start">Tkinter affiche les valeurs et courbes ; export CSV possible.</text>
+<text x="2474" y="1231" font-family="DejaVu Sans,sans-serif" font-size="26" font-weight="400" fill="#18324d" text-anchor="start">Commandes : interface → file → série → app.c</text>
+<text x="2474" y="1271" font-family="DejaVu Sans,sans-serif" font-size="26" font-weight="400" fill="#18324d" text-anchor="start">600 acquisitions · formats compact et lisible acceptés</text>
+<text x="2474" y="1311" font-family="DejaVu Sans,sans-serif" font-size="26" font-weight="400" fill="#18324d" text-anchor="start">Heure RTC de la mesure ≠ heure de réception sur le PC.</text>
+<text x="2450" y="1392" font-family="DejaVu Sans,sans-serif" font-size="28" font-weight="700" fill="#7044a0" text-anchor="start">PERSISTANCE DES RÉGLAGES — indépendante de la SD</text>
+<rect x="2450" y="1420" width="1060" height="111" rx="20" fill="#f5f0fc" stroke="#d5dfe9" stroke-width="2"/>
+<text x="2470" y="1460" font-family="DejaVu Sans Mono,monospace" font-size="29" font-weight="700" fill="#7044a0" text-anchor="start">app.c → config.c</text>
+<text x="2470" y="1499" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Valeurs par défaut, validation des paramètres et CRC32</text>
+<rect x="2450" y="1560" width="1060" height="112" rx="20" fill="#f5f0fc" stroke="#d5dfe9" stroke-width="2"/>
+<text x="2470" y="1600" font-family="DejaVu Sans Mono,monospace" font-size="29" font-weight="700" fill="#7044a0" text-anchor="start">app.c → nv_store.c → Flash interne</text>
+<text x="2470" y="1639" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Deux pages : sauvegarde, CRC et marqueur de validation</text>
+<text x="2450" y="1712" font-family="DejaVu Sans,sans-serif" font-size="26" font-weight="400" fill="#4e647a" text-anchor="start">nv_store.c utilise config.c pour valider et calculer le CRC.</text>
+<text x="2450" y="1751" font-family="DejaVu Sans,sans-serif" font-size="25" font-weight="400" fill="#4e647a" text-anchor="start">--demo : mesures fictives · --self-test : tests du parseur</text>
+<rect x="60" y="1840" width="1120" height="830" rx="20" fill="#ffffff" stroke="#d5dfe9" stroke-width="2"/>
+<path d="M80,1840 H1160 Q1180,1840 1180,1860 V1918 H60 V1860 Q60,1840 80,1840 Z" fill="#7044a0"/>
+<text x="88" y="1891" font-family="DejaVu Sans,sans-serif" font-size="34" font-weight="700" fill="#ffffff" text-anchor="start">6  MODES, DÉLAIS ET INTERRUPTIONS</text>
+<rect x="90" y="1950" width="1060" height="90" rx="20" fill="#e4f4e8" stroke="#d5dfe9" stroke-width="2"/>
+<text x="110" y="1984" font-family="DejaVu Sans,sans-serif" font-size="28" font-weight="700" fill="#7044a0" text-anchor="start">STANDARD</text>
+<text x="110" y="2019" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Acquisitions périodiques et écriture sur SD.</text>
+<rect x="90" y="2055" width="1060" height="90" rx="20" fill="#fff4ce" stroke="#d5dfe9" stroke-width="2"/>
+<text x="110" y="2089" font-family="DejaVu Sans,sans-serif" font-size="28" font-weight="700" fill="#7044a0" text-anchor="start">CONFIGURATION</text>
+<text x="110" y="2124" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Réglages série ; aucun cycle d’acquisition.</text>
+<rect x="90" y="2160" width="1060" height="90" rx="20" fill="#ffead8" stroke="#d5dfe9" stroke-width="2"/>
+<text x="110" y="2194" font-family="DejaVu Sans,sans-serif" font-size="28" font-weight="700" fill="#7044a0" text-anchor="start">MAINTENANCE</text>
+<text x="110" y="2229" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Mesures sur console ; SD libérée, sans écriture.</text>
+<rect x="90" y="2265" width="1060" height="90" rx="20" fill="#e3efff" stroke="#d5dfe9" stroke-width="2"/>
+<text x="110" y="2299" font-family="DejaVu Sans,sans-serif" font-size="28" font-weight="700" fill="#7044a0" text-anchor="start">ÉCONOMIQUE</text>
+<text x="110" y="2334" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Intervalle ×2 ; GPS demandé un cycle sur deux.</text>
+<text x="90" y="2416" font-family="DejaVu Sans,sans-serif" font-size="26" font-weight="400" fill="#18324d" text-anchor="start">Rouge au démarrage → configuration</text>
+<text x="90" y="2453" font-family="DejaVu Sans,sans-serif" font-size="26" font-weight="400" fill="#18324d" text-anchor="start">Rouge 5 s : standard ↔ maintenance</text>
+<text x="90" y="2490" font-family="DejaVu Sans,sans-serif" font-size="25" font-weight="400" fill="#18324d" text-anchor="start">Vert 5 s : standard → économie ; rouge 5 s : retour standard</text>
+<text x="90" y="2540" font-family="DejaVu Sans,sans-serif" font-size="26" font-weight="700" fill="#7044a0" text-anchor="start">App_Background() sert le GPS, les boutons et la LED.</text>
+<text x="90" y="2577" font-family="DejaVu Sans,sans-serif" font-size="25" font-weight="400" fill="#18324d" text-anchor="start">Les IRQ UART déplacent les octets dans des tampons circulaires.</text>
+<text x="90" y="2614" font-family="DejaVu Sans,sans-serif" font-size="25" font-weight="400" fill="#18324d" text-anchor="start">En configuration, le décodage GPS continue en fond.</text>
+<text x="90" y="2651" font-family="DejaVu Sans,sans-serif" font-size="25" font-weight="400" fill="#18324d" text-anchor="start">Les erreurs sont prioritaires sur la couleur du mode.</text>
+<rect x="1240" y="1840" width="1120" height="830" rx="20" fill="#ffffff" stroke="#d5dfe9" stroke-width="2"/>
+<path d="M1260,1840 H2340 Q2360,1840 2360,1860 V1918 H1240 V1860 Q1240,1840 1260,1840 Z" fill="#087f80"/>
+<text x="1268" y="1891" font-family="DejaVu Sans,sans-serif" font-size="34" font-weight="700" fill="#ffffff" text-anchor="start">7  EN-TÊTES : LES CONTRATS PARTAGÉS</text>
+<text x="1270" y="1960" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="700" fill="#087f80" text-anchor="start">Un .h déclare ; il ne constitue pas une tâche exécutée.</text>
+<text x="1270" y="2020" font-family="DejaVu Sans Mono,monospace" font-size="27" font-weight="700" fill="#2563a5" text-anchor="start">include/app_types.h</text>
+<text x="1270" y="2055" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Config, Measurement, DateTime, GpsFix, modes et statuts.</text>
+<text x="1270" y="2107" font-family="DejaVu Sans Mono,monospace" font-size="27" font-weight="700" fill="#2563a5" text-anchor="start">include/cesi_types.h</text>
+<text x="1270" y="2142" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Structures échangées par les pilotes Grove.</text>
+<text x="1270" y="2194" font-family="DejaVu Sans Mono,monospace" font-size="27" font-weight="700" fill="#2563a5" text-anchor="start">include/services.h</text>
+<text x="1270" y="2229" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Fonctions publiques des services de src/.</text>
+<text x="1270" y="2281" font-family="DejaVu Sans Mono,monospace" font-size="27" font-weight="700" fill="#2563a5" text-anchor="start">include/board.h + include/setup.h</text>
+<text x="1270" y="2316" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Fonctions de la couche carte et initialisation.</text>
+<text x="1270" y="2368" font-family="DejaVu Sans Mono,monospace" font-size="27" font-weight="700" fill="#2563a5" text-anchor="start">include/board_pins.h</text>
+<text x="1270" y="2403" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Broches, polarité des boutons et permutation GPS.</text>
+<text x="1270" y="2455" font-family="DejaVu Sans Mono,monospace" font-size="27" font-weight="700" fill="#2563a5" text-anchor="start">include/stm32l4xx_hal_conf.h</text>
+<text x="1270" y="2490" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Choix des modules et options de la HAL ST.</text>
+<text x="1270" y="2542" font-family="DejaVu Sans Mono,monospace" font-size="27" font-weight="700" fill="#2563a5" text-anchor="start">lib/cesi_grove/include/*.h</text>
+<text x="1270" y="2577" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Interface de chaque pilote, portant le même nom que son .c.</text>
+<text x="1270" y="2650" font-family="DejaVu Sans,sans-serif" font-size="26" font-weight="400" fill="#4e647a" text-anchor="start">Les fichiers .c incluent ces déclarations avec #include.</text>
+<rect x="2420" y="1840" width="1120" height="830" rx="20" fill="#ffffff" stroke="#d5dfe9" stroke-width="2"/>
+<path d="M2440,1840 H3520 Q3540,1840 3540,1860 V1918 H2420 V1860 Q2420,1840 2440,1840 Z" fill="#2563a5"/>
+<text x="2448" y="1891" font-family="DejaVu Sans,sans-serif" font-size="34" font-weight="700" fill="#ffffff" text-anchor="start">8  COMPILATION ET SUPPORT DU C</text>
+<text x="2450" y="1973" font-family="DejaVu Sans Mono,monospace" font-size="27" font-weight="700" fill="#2563a5" text-anchor="start">platformio.ini + build.sh</text>
+<text x="2450" y="2008" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Carte cible, options et lancement des commandes.</text>
+<text x="2450" y="2060" font-family="DejaVu Sans Mono,monospace" font-size="27" font-weight="700" fill="#2563a5" text-anchor="start">scripts/build_direct.py</text>
+<text x="2450" y="2095" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Compilation ARM directe avec les outils déjà installés.</text>
+<text x="2450" y="2147" font-family="DejaVu Sans Mono,monospace" font-size="27" font-weight="700" fill="#2563a5" text-anchor="start">linker.ld</text>
+<text x="2450" y="2182" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Placement du programme en Flash/RAM ; pages de réglages réservées.</text>
+<text x="2450" y="2234" font-family="DejaVu Sans Mono,monospace" font-size="27" font-weight="700" fill="#2563a5" text-anchor="start">src/syscalls.c</text>
+<text x="2450" y="2269" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Adapte la bibliothèque C : tas mémoire et console série.</text>
+<text x="2450" y="2321" font-family="DejaVu Sans Mono,monospace" font-size="27" font-weight="700" fill="#2563a5" text-anchor="start">HAL / CMSIS (dépendances ST)</text>
+<text x="2450" y="2356" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Accès aux périphériques STM32 et au cœur ARM.</text>
+<text x="2450" y="2408" font-family="DejaVu Sans Mono,monospace" font-size="27" font-weight="700" fill="#2563a5" text-anchor="start">lib/library.json + lib/cesi_grove/library.json</text>
+<text x="2450" y="2443" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Déclarent la bibliothèque Grove à l’outil de compilation.</text>
+<text x="2450" y="2495" font-family="DejaVu Sans Mono,monospace" font-size="27" font-weight="700" fill="#2563a5" text-anchor="start">scripts/upload_bin.sh</text>
+<text x="2450" y="2530" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Outil de téléversement du binaire avec OpenOCD.</text>
+<text x="2450" y="2582" font-family="DejaVu Sans Mono,monospace" font-size="27" font-weight="700" fill="#2563a5" text-anchor="start">.pio/ · build/ · dist/</text>
+<text x="2450" y="2617" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Résultats de compilation et binaires fournis ; pas les sources.</text>
+<rect x="60" y="2720" width="3480" height="400" rx="20" fill="#ffffff" stroke="#d5dfe9" stroke-width="2"/>
+<path d="M80,2720 H3520 Q3540,2720 3540,2740 V2798 H60 V2740 Q60,2720 80,2720 Z" fill="#18324d"/>
+<text x="88" y="2771" font-family="DejaVu Sans,sans-serif" font-size="34" font-weight="700" fill="#ffffff" text-anchor="start">9  TESTS, DOCUMENTATION ET FICHIERS ANNEXES</text>
+<text x="90" y="2846" font-family="DejaVu Sans Mono,monospace" font-size="27" font-weight="700" fill="#2563a5" text-anchor="start">scripts/test_host.sh</text>
+<text x="90" y="2881" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Lance les trois suites C sur le PC.</text>
+<text x="90" y="2925" font-family="DejaVu Sans Mono,monospace" font-size="27" font-weight="700" fill="#2563a5" text-anchor="start">tests/test_core.c</text>
+<text x="90" y="2960" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Réglages, CRC, calendrier, GPS et format.</text>
+<text x="90" y="3004" font-family="DejaVu Sans Mono,monospace" font-size="27" font-weight="700" fill="#2563a5" text-anchor="start">tests/test_app.c</text>
+<text x="90" y="3039" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Acquisitions, modes et libération SD simulés.</text>
+<text x="90" y="3082" font-family="DejaVu Sans,sans-serif" font-size="26" font-weight="400" fill="#18324d" text-anchor="start">tests/test_storage.c : archives sur disque simulé.</text>
+<text x="1270" y="2846" font-family="DejaVu Sans Mono,monospace" font-size="27" font-weight="700" fill="#2563a5" text-anchor="start">tests/mock/ + tests/app_mock/</text>
+<text x="1270" y="2881" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Remplacent le matériel pour les essais sur PC.</text>
+<text x="1270" y="2925" font-family="DejaVu Sans Mono,monospace" font-size="27" font-weight="700" fill="#2563a5" text-anchor="start">README.md + docs/*.md</text>
+<text x="1270" y="2960" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Prise en main, validation et provenance du projet.</text>
+<text x="1270" y="3004" font-family="DejaVu Sans Mono,monospace" font-size="27" font-weight="700" fill="#2563a5" text-anchor="start">docs/UPSTREAM_MANIFEST.json</text>
+<text x="1270" y="3039" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Identifie les fichiers de la base pédagogique.</text>
+<text x="1270" y="3082" font-family="DejaVu Sans,sans-serif" font-size="25" font-weight="400" fill="#4e647a" text-anchor="start">Les tests PC ne constituent pas une validation matérielle.</text>
+<text x="2450" y="2846" font-family="DejaVu Sans Mono,monospace" font-size="27" font-weight="700" fill="#2563a5" text-anchor="start">.gitignore · .clang-format · .vscode/</text>
+<text x="2450" y="2881" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Fichiers ignorés, présentation du code et outils de l’éditeur.</text>
+<text x="2450" y="2925" font-family="DejaVu Sans Mono,monospace" font-size="27" font-weight="700" fill="#2563a5" text-anchor="start">SHA256SUMS · ORIGIN.txt · LICENSE</text>
+<text x="2450" y="2960" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Empreintes, provenance et licences des composants.</text>
+<text x="2450" y="3004" font-family="DejaVu Sans Mono,monospace" font-size="27" font-weight="700" fill="#2563a5" text-anchor="start">Bibliothèques tierces : Bosch et FatFs</text>
+<text x="2450" y="3039" font-family="DejaVu Sans,sans-serif" font-size="27" font-weight="400" fill="#18324d" text-anchor="start">Sources, en-têtes et configuration regroupés dans lib/.</text>
+<text x="2450" y="3082" font-family="DejaVu Sans,sans-serif" font-size="25" font-weight="400" fill="#4e647a" text-anchor="start">Les sauvegardes .bak ne participent pas à la compilation.</text>
+<text x="60" y="3180" font-family="DejaVu Sans,sans-serif" font-size="29" font-weight="800" fill="#087f80" text-anchor="start">À RETENIR</text>
+<text x="60" y="3224" font-family="DejaVu Sans,sans-serif" font-size="29" font-weight="400" fill="#18324d" text-anchor="start">app.c décide ; les services adaptent ; les pilotes dialoguent ; FatFs organise les fichiers ; Python affiche sur le PC.</text>
+<text x="3540" y="3260" font-family="DejaVu Sans,sans-serif" font-size="23" font-weight="400" fill="#4e647a" text-anchor="end">Code de référence : d061c30 · appels principaux regroupés</text>
+</svg>

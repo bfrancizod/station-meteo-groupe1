@@ -1,5 +1,10 @@
 # Worldwide Weather Watcher Groupe 1
 
+Pour installer le projet dans une VM et afficher les mesures, suivre le
+[guide VirtualBox et tableau de bord graphique](docs/INSTALLATION_VIRTUALBOX.md).
+Il couvre l'installation Linux, le passage USB du ST-LINK, les permissions,
+la compilation et le lancement du tableau de bord avec ou sans carte.
+
 Cette version complète **le dépôt pédagogique imposé** :
 https://github.com/ValentinMoraine/Worldwide-Weather-Watcher
 
