@@ -102,15 +102,65 @@ revient au standard ; relâcher puis refaire un appui rouge pour la maintenance.
 ## 7. Utiliser la console série
 
 Fermer le tableau de bord avant d'ouvrir la console. Adapter le nom du port
-à celui détecté à l'étape 6 :
+à celui détecté à l'étape 6. Utiliser en priorité le moniteur série PlatformIO.
+Avec PlatformIO installé par l'extension IDE, la commande est :
+
+```bash
+~/.platformio/penv/bin/pio device monitor -p /dev/ttyACM0 -b 115200
+```
+
+Si ce chemin n'existe pas et que PlatformIO a été installé dans l'environnement
+de cette fiche, utiliser le même moniteur depuis cet environnement :
+
+```bash
+source "$HOME/.venvs/station-meteo/bin/activate"
+pio device monitor -p /dev/ttyACM0 -b 115200
+```
+
+Ces commandes permettent de lire les mesures et de saisir `HELP`, `STATUS`, etc.
+Quitter avec le raccourci indiqué au démarrage du moniteur, généralement
+**Ctrl+C**, pour libérer le port.
+
+La commande Python avec miniterm reste une alternative ; la lancer après avoir
+fermé le moniteur PlatformIO :
 
 ```bash
 python -m serial.tools.miniterm /dev/ttyACM0 115200 --dtr 1 --rts 1 --exit-char 3
 ```
 
+La commande également utilisée sur le poste initial est :
+
+```bash
+sudo /usr/bin/python -m serial.tools.miniterm /dev/ttyACM0 115200 --dtr 1 --rts 1 --exit-char 3
+```
+
+Elle lance le même miniterm, avec le Python système et les droits administrateur.
+Le fichier `/usr/bin/python` doit exister et disposer de pyserial ; cette commande
+n'utilise pas le Python de l'environnement activé. `sudo` est inutile lorsque
+l'utilisateur a déjà les droits sur le port série.
+
+Pour lire seulement les mesures avec les outils Linux, sans Python :
+
+```bash
+stty -F /dev/ttyACM0 115200 raw -echo && cat /dev/ttyACM0
+```
+
+| Méthode | Afficher les textes reçus | Envoyer `HELP` / `STATUS` | Python sur le PC |
+|---|---|---|---|
+| Moniteur PlatformIO, en priorité | Oui | Oui | Utilisé en interne par PlatformIO |
+| Miniterm, avec ou sans `sudo` | Oui | Oui | Lancé explicitement |
+| `stty` puis `cat` | Oui | Non, lecture seule | Non |
+
+L'explication de chaque élément (`sudo`, `-m`, `--dtr`, `--rts`, `raw`, `&&`,
+etc.) et des différences se trouve dans le
+[comparatif détaillé des consoles](docs/INSTALLATION_VIRTUALBOX.md#comparaison-consoles).
+
 Appuyer sur RESET de la Nucleo sans maintenir de bouton rouge/vert, puis saisir
-`HELP` ou `STATUS` et valider avec Entrée. Quitter avec **Ctrl+C** pour libérer
-le port avant de revenir au tableau de bord.
+`HELP` ou `STATUS` et valider avec Entrée si l'on utilise PlatformIO ou miniterm.
+Pour afficher les mesures détaillées avec l'une des trois méthodes,
+maintenir le bouton rouge 5 secondes depuis le mode standard afin d'entrer en
+maintenance. Avec miniterm ou `cat`, **Ctrl+C** libère le port avant
+de revenir au tableau de bord.
 
 Un seul programme doit utiliser le port : console, moniteur PlatformIO ou
 tableau de bord.

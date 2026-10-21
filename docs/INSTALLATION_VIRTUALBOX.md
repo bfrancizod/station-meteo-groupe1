@@ -252,21 +252,155 @@ dispose de Tkinter et pyserial.
 ## 7. Vérifier la console avant le tableau de bord
 
 Le tableau de bord doit être fermé pour cette vérification. Remplacer le port si
-la détection a donné un autre nom :
+la détection a donné un autre nom. Utiliser en priorité le moniteur série
+PlatformIO. Avec PlatformIO installé par l'extension IDE :
+
+```bash
+~/.platformio/penv/bin/pio device monitor -p /dev/ttyACM0 -b 115200
+```
+
+Si ce chemin n'existe pas, utiliser l'installation préparée à l'étape 2 :
+
+```bash
+source "$HOME/.venvs/station-meteo/bin/activate"
+pio device monitor -p /dev/ttyACM0 -b 115200
+```
+
+Le moniteur configure la liaison et permet de recevoir les textes et d'envoyer
+des commandes. Le raccourci de sortie est indiqué au démarrage, généralement
+**Ctrl+C**. Référence : [moniteur série PlatformIO](https://docs.platformio.org/en/latest/core/userguide/device/cmd_monitor.html).
+
+La commande Python reste une alternative. Quitter le moniteur PlatformIO avant
+de l'utiliser :
 
 ```bash
 python -m serial.tools.miniterm /dev/ttyACM0 115200 --dtr 1 --rts 1 --exit-char 3
 ```
 
+La commande utilisée sur le poste initial peut aussi servir si `/usr/bin/python`
+existe et dispose du module pyserial :
+
+```bash
+sudo /usr/bin/python -m serial.tools.miniterm /dev/ttyACM0 115200 --dtr 1 --rts 1 --exit-char 3
+```
+
+Elle utilise les droits administrateur et le Python système. L'activation de
+`~/.venvs/station-meteo` ne change pas ce chemin explicite ; installer pyserial
+dans cet environnement ne l'installe donc pas dans `/usr/bin/python`. Si ce
+chemin n'existe pas, utiliser la commande `python -m ...` de l'environnement
+ci-dessus. Une fois les permissions série configurées à l'étape 5, `sudo` n'est
+normalement pas nécessaire. Il ne remplace pas la capture USB dans VirtualBox.
+
 Appuyer brièvement sur le bouton RESET de la Nucleo, sans maintenir de bouton
 rouge/vert : le démarrage normal sélectionne le mode standard. Saisir `HELP`,
 puis `STATUS`, en validant chaque commande avec Entrée. Les réponses confirment
-que la console fonctionne. `--exit-char 3` permet de quitter avec **Ctrl+C** et
+que la console fonctionne. Pour les mesures détaillées dans la console,
+maintenir le bouton rouge 5 secondes depuis le standard pour passer en
+maintenance. Avec miniterm, `--exit-char 3` permet de quitter avec **Ctrl+C** et
 de libérer le port.
 
 Référence des commandes PC : [outils pyserial](https://pyserial.readthedocs.io/en/latest/tools.html).
 Ne pas lancer miniterm, le moniteur PlatformIO et le tableau de bord simultanément
 sur le même port.
+
+<a id="comparaison-consoles"></a>
+
+### Comprendre les commandes et leurs différences
+
+Les trois méthodes ci-dessous lisent le texte produit par le programme C de la
+Nucleo. Le mode choisi et le programme installé sur la carte déterminent quelles
+mesures sont envoyées. Python, lorsqu'il est utilisé, tourne sur le PC.
+
+#### A. Moniteur PlatformIO — choix prioritaire
+
+```bash
+~/.platformio/penv/bin/pio device monitor -p /dev/ttyACM0 -b 115200
+```
+
+| Élément | Rôle |
+|---|---|
+| `~` | Dossier personnel de l'utilisateur Linux qui lance la commande. |
+| `.platformio/penv/bin/pio` | Exécutable PlatformIO dans son environnement Python ; ce chemin dépend de l'installation. |
+| `device monitor` | Ouvre le moniteur série pour recevoir les textes et envoyer des commandes. |
+| `-p /dev/ttyACM0` | Choisit le périphérique série de la Nucleo dans la VM. |
+| `-b 115200` | Règle la vitesse à 115200 bauds, comme la console du programme C. |
+
+PlatformIO utilise Python en interne, même si la commande ne contient pas le mot
+`python`. Il prépare la liaison et fournit un menu de contrôle. Le raccourci
+annoncé au démarrage permet de quitter le moniteur.
+
+#### B. Miniterm — console Python, avec ou sans droits administrateur
+
+```bash
+sudo /usr/bin/python -m serial.tools.miniterm /dev/ttyACM0 115200 --dtr 1 --rts 1 --exit-char 3
+```
+
+| Élément | Rôle |
+|---|---|
+| `sudo` | Exécute la commande avec les droits administrateur. Ce n'est pas requis quand l'utilisateur a les permissions série. |
+| `/usr/bin/python` | Choisit ce Python système précis, indépendamment de l'environnement virtuel activé. |
+| `-m` | Demande à Python d'exécuter le module indiqué ensuite. |
+| `serial.tools.miniterm` | Petit terminal série fourni par la bibliothèque pyserial. |
+| `/dev/ttyACM0` | Port série USB à ouvrir ; adapter le numéro à la détection dans la VM. |
+| `115200` | Vitesse de la liaison en bauds. |
+| `--dtr 1` | Demande d'activer le signal de contrôle DTR à l'ouverture du port. |
+| `--rts 1` | Demande d'activer le signal de contrôle RTS à l'ouverture du port. |
+| `--exit-char 3` | Associe la sortie au caractère de code 3, soit **Ctrl+C**. |
+
+Les options DTR et RTS fixent des signaux de contrôle de la liaison ; elles ne
+sélectionnent pas le mode maintenance et n'activent pas à elles seules le contrôle
+de flux matériel RTS/CTS. Leur effet dépend du périphérique connecté.
+PlatformIO permet également de les préciser :
+
+```bash
+~/.platformio/penv/bin/pio device monitor -p /dev/ttyACM0 -b 115200 --dtr 1 --rts 1
+```
+
+Pour miniterm depuis l'environnement de ce guide, sans droits administrateur :
+
+```bash
+source "$HOME/.venvs/station-meteo/bin/activate"
+python -m serial.tools.miniterm /dev/ttyACM0 115200 --dtr 1 --rts 1 --exit-char 3
+```
+
+PlatformIO et miniterm permettent tous les deux de saisir `HELP`, `STATUS`, etc.,
+puis Entrée, et d'afficher les réponses de la station.
+
+#### C. Lecture simple avec les outils Linux — sans Python
+
+```bash
+stty -F /dev/ttyACM0 115200 raw -echo && cat /dev/ttyACM0
+```
+
+| Élément | Rôle |
+|---|---|
+| `stty` | Configure les paramètres du port série. |
+| `-F /dev/ttyACM0` | Applique ces réglages au périphérique indiqué, et non au terminal du clavier. |
+| `115200` | Règle la vitesse de la liaison en bauds. |
+| `raw` | Désactive certains traitements automatiques des caractères pour une réception brute. |
+| `-echo` | Désactive le renvoi automatique des caractères reçus vers la carte ; cela ne masque pas l'affichage de `cat`. |
+| `&&` | Lance la commande suivante uniquement si la configuration a réussi. |
+| `cat` | Lit le périphérique et affiche les octets reçus dans le terminal. |
+| Le second `/dev/ttyACM0` | Indique à `cat` quel périphérique lire. |
+
+Cette commande permet uniquement de lire les mesures : la saisie de `HELP` ou
+`STATUS` n'est pas envoyée à la carte par `cat`. **Ctrl+C** arrête la lecture sur
+le PC ; la station continue à fonctionner. DTR et RTS ne sont pas fixés
+explicitement par cette commande.
+
+#### Comparaison avec le tableau de bord
+
+| Méthode | Affichage | Commandes vers la station | Utilisation de Python sur le PC |
+|---|---|---|---|
+| PlatformIO | Textes dans le terminal, avec options et menu | Saisie interactive | Oui, en interne |
+| Miniterm | Textes dans le terminal | Saisie interactive | Oui, explicitement |
+| `stty` + `cat` | Lecture des textes dans le terminal | Aucune saisie envoyée par `cat` | Non |
+| `tools/station_dashboard.py` | Fenêtre avec valeurs, courbes et export CSV | Bouton de statut et requêtes `STATUS` automatiques | Oui, avec Tkinter et pyserial |
+
+Ouvrir une seule de ces méthodes à la fois sur le même port. Pour les mesures
+détaillées, passer en maintenance avec le bouton rouge maintenu 5 secondes
+depuis le standard. Changer de moniteur ne change ni les mesures des capteurs,
+ni les fichiers `.LOG` ; certains moniteurs peuvent modifier leur présentation.
 
 ## 8. Afficher les mesures réelles
 
