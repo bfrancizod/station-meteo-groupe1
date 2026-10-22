@@ -1,0 +1,423 @@
+{
+  "edition": "2026-10-21",
+  "source_commit": "6bc3343",
+  "nombre_fichiers_source": 76,
+  "hypotheses": "Documents selon code actuel ; transcription prudente de la photo ; voir écarts GPS et limites de validation.",
+  "fichiers": [
+    {
+      "chemin": "Annexes/Consignes_modes_fonctionnement.pdf",
+      "octets": 486752,
+      "sha256": "6f94f8fa211eff710fcf8aafeca92d034e5bef0ffbd4c14ab8d6f57cb550f905"
+    },
+    {
+      "chemin": "Code_source/.clang-format",
+      "octets": 298,
+      "sha256": "d89e38b36c74499422184430fdbde8650cdfb3de950b470ec153065a72c7d21e"
+    },
+    {
+      "chemin": "Code_source/.gitignore",
+      "octets": 218,
+      "sha256": "2f4e1d7d8ca4a71111ca0c8b8e688d593384a5681e458212ff0f41a927af188d"
+    },
+    {
+      "chemin": "Code_source/LANCEMENT.md",
+      "octets": 9120,
+      "sha256": "52a9869a8fc27d40a1fb5c4ef5c89e00ab54330c2fb3f53f364977b13077c7a3"
+    },
+    {
+      "chemin": "Code_source/README.md",
+      "octets": 7223,
+      "sha256": "e1ab91b7df70e8ddf294da2b8db6476f2eaf1366f5bf35ed2209e59d30c728c6"
+    },
+    {
+      "chemin": "Code_source/SOUTENANCE.md",
+      "octets": 3180,
+      "sha256": "fc66b82b3277a5a56eb48bc148ed17215daef7d98cf561a5db45976483e550f2"
+    },
+    {
+      "chemin": "Code_source/build.sh",
+      "octets": 889,
+      "sha256": "35e598985a2cb09d5289c6e33c4b34de79eea72321fb937a31943eaea8f6a8f4"
+    },
+    {
+      "chemin": "Code_source/docs/BASE_GITHUB.md",
+      "octets": 5642,
+      "sha256": "97970da55bcaf5ca8b2d0411d9234411f3e23d2685ac33ab926a6fbdd4614b6f"
+    },
+    {
+      "chemin": "Code_source/docs/COMPRENDRE_LA_STATION.md",
+      "octets": 43662,
+      "sha256": "2a95ba9839cb234c2fc7b1d84372f7820aaabc96594418b7099b42625ad56359"
+    },
+    {
+      "chemin": "Code_source/docs/INSTALLATION_VIRTUALBOX.md",
+      "octets": 23754,
+      "sha256": "b78013fc0b524b262c8044ba291e54af6dc2f12ad78a2107d8ca51a9e000de80"
+    },
+    {
+      "chemin": "Code_source/docs/PRISE_EN_MAIN.md",
+      "octets": 14708,
+      "sha256": "2051963e69b8bc0171d84666132bb8ad09d973748904d025a61f251541f20635"
+    },
+    {
+      "chemin": "Code_source/docs/UPSTREAM_MANIFEST.json",
+      "octets": 6484,
+      "sha256": "4ba3cf54cfc805485c00023b05cf0eb602780095d9c9eddf9a3477968be2262b"
+    },
+    {
+      "chemin": "Code_source/docs/VALIDATION.md",
+      "octets": 3226,
+      "sha256": "c35a2ec6137e823e0760b11088e8b5c0458ae42ad0e433333330f195486638d4"
+    },
+    {
+      "chemin": "Code_source/docs/schema_fichiers_station_meteo.png",
+      "octets": 1655107,
+      "sha256": "e39d22a19dd45e2f4ac89d2e62002cda501b406374614ddbbb853fbcb422eec3"
+    },
+    {
+      "chemin": "Code_source/docs/schema_fichiers_station_meteo.svg",
+      "octets": 40318,
+      "sha256": "0444483f9ab32b628f65b04e38a7ca2069908e56916e639cdb07e2a989a876b0"
+    },
+    {
+      "chemin": "Code_source/docs/schema_simplifie_station_meteo.png",
+      "octets": 290472,
+      "sha256": "6a6184317b6e620e7c3a7779ec295264cb67fb72bb68a2d8ca6d5cd5f6f1faa0"
+    },
+    {
+      "chemin": "Code_source/docs/schema_simplifie_station_meteo.svg",
+      "octets": 8056,
+      "sha256": "7fd9b8418599bca0fe77a2608824f27e3e12139f08c2601c9854c5b63fda467c"
+    },
+    {
+      "chemin": "Code_source/include/app_types.h",
+      "octets": 3413,
+      "sha256": "9f1952eae656e7281c2d0cdc3656df80cac04a5d11e211b31ee2338a093e6a27"
+    },
+    {
+      "chemin": "Code_source/include/board.h",
+      "octets": 1585,
+      "sha256": "5175b490832752b6e75518ce1f507c85d155a0879ddb4626971a0de6932afa0b"
+    },
+    {
+      "chemin": "Code_source/include/board_pins.h",
+      "octets": 2581,
+      "sha256": "3bf23a7f0c5b4d4b6269654b6317a50427612e744d8cc5ab5f0034972125ca34"
+    },
+    {
+      "chemin": "Code_source/include/cesi_types.h",
+      "octets": 1299,
+      "sha256": "3f49dbc47faacc013d93d5d8a6d8dd38779f7ac7d20e505e074ca48c23cc9f94"
+    },
+    {
+      "chemin": "Code_source/include/services.h",
+      "octets": 2695,
+      "sha256": "637fc7a598ddae3bae663c2449506f0bb4b648ac3fbd56c98d3228afdc545653"
+    },
+    {
+      "chemin": "Code_source/include/setup.h",
+      "octets": 402,
+      "sha256": "887b7014ec9769263f615bd3d253b4b75b2006aa486c2db5ff4218c55d868957"
+    },
+    {
+      "chemin": "Code_source/include/stm32l4xx_hal_conf.h",
+      "octets": 16078,
+      "sha256": "28acbce34803589d658bf756f4e7a287c1f176726ff58b643cd8d86c52cddad5"
+    },
+    {
+      "chemin": "Code_source/lib/bosch_bme280/LICENSE",
+      "octets": 1524,
+      "sha256": "8c966978a9f67992e824d0b76381eab42f240c0049881f7bf2b46c2c093191aa"
+    },
+    {
+      "chemin": "Code_source/lib/bosch_bme280/ORIGIN.txt",
+      "octets": 80,
+      "sha256": "78fbcc307e4fea1b91d50ac70b6b60f39b08fecdf34b08e2ed501065243fc380"
+    },
+    {
+      "chemin": "Code_source/lib/bosch_bme280/bme280.c",
+      "octets": 51082,
+      "sha256": "7de1e7d3082b85e90db1daa34573ba77553a7caf44e06e216de5216b7ed4fa12"
+    },
+    {
+      "chemin": "Code_source/lib/bosch_bme280/bme280.h",
+      "octets": 13492,
+      "sha256": "6f144510e103f0ab1a24244a71f7ff8ab7f23147b4899aa7bfd0f526062d2163"
+    },
+    {
+      "chemin": "Code_source/lib/bosch_bme280/bme280_defs.h",
+      "octets": 17409,
+      "sha256": "541bbd32498b8603bc8fe8eafac26b15d09fb032d37448ca88e7aa398d6a0769"
+    },
+    {
+      "chemin": "Code_source/lib/cesi_grove/include/grove_bme280.h",
+      "octets": 612,
+      "sha256": "716be3f262fc09c00daf33e35af50a7a1f68651c990911905c4ba7ab95ef4bb8"
+    },
+    {
+      "chemin": "Code_source/lib/cesi_grove/include/grove_bme680.h",
+      "octets": 516,
+      "sha256": "3cc30a6cc63721551ef5bb91f03773b639288acd51a049b12fe13d943fa3cacd"
+    },
+    {
+      "chemin": "Code_source/lib/cesi_grove/include/grove_button.h",
+      "octets": 444,
+      "sha256": "b96711d61ba22c4c8f821142399b67197093b7992587bebba5163dc8d751efbe"
+    },
+    {
+      "chemin": "Code_source/lib/cesi_grove/include/grove_gps_air530z.h",
+      "octets": 1225,
+      "sha256": "385335a2bd15cc402c54f0c95dcdb9ebe67c2566d2a68646ab544b96c1266b50"
+    },
+    {
+      "chemin": "Code_source/lib/cesi_grove/include/grove_light.h",
+      "octets": 365,
+      "sha256": "4fd9dfbad7fcd699cf2b52cd896b45631544490e8b0051cb037ab7cde573c5fc"
+    },
+    {
+      "chemin": "Code_source/lib/cesi_grove/include/grove_rgb.h",
+      "octets": 245,
+      "sha256": "8bf3c402520f88c11d80df62a480eb2a15d9390740fc640481b1fb0a7854afc0"
+    },
+    {
+      "chemin": "Code_source/lib/cesi_grove/include/grove_rtc_ds1307.h",
+      "octets": 587,
+      "sha256": "245e0970fc6b2e131bb1cc5112c0191a987fd469d93ab625fda47617454e1a64"
+    },
+    {
+      "chemin": "Code_source/lib/cesi_grove/include/sd_logger.h",
+      "octets": 1390,
+      "sha256": "ddcfda283338baa0985dd215958d1729f43ec3fc56c467a9c297b5ec0e57abbb"
+    },
+    {
+      "chemin": "Code_source/lib/cesi_grove/library.json",
+      "octets": 188,
+      "sha256": "011ec23350e43734903ee0302d718743742e1c5f1e025f2cdd20750884aae153"
+    },
+    {
+      "chemin": "Code_source/lib/cesi_grove/src/grove_bme280.c",
+      "octets": 3845,
+      "sha256": "e56d3e1e08aa12f3a3d2efa2546e95bec407d83161f1e3545d8895e742b98239"
+    },
+    {
+      "chemin": "Code_source/lib/cesi_grove/src/grove_bme680.c",
+      "octets": 2231,
+      "sha256": "35088e0c1ebcc5005e539188ee97a6b8b36f92fcf0fc291c95f10006e129e053"
+    },
+    {
+      "chemin": "Code_source/lib/cesi_grove/src/grove_button.c",
+      "octets": 1423,
+      "sha256": "cbea3bd9762d54d087fcf21104d575e41c0b6d3b5a3ae765fa67e8a25324d136"
+    },
+    {
+      "chemin": "Code_source/lib/cesi_grove/src/grove_gps_air530z.c",
+      "octets": 10032,
+      "sha256": "3326640c5e8ba3d51bd8ab5f1902f8a1ec327c565826ffce521ed794db2f96ed"
+    },
+    {
+      "chemin": "Code_source/lib/cesi_grove/src/grove_light.c",
+      "octets": 2541,
+      "sha256": "c6bec2f672b7684c258751080156ce8cc2fa38c0ef6fa30a9349dd26a9bfd7e6"
+    },
+    {
+      "chemin": "Code_source/lib/cesi_grove/src/grove_rgb.c",
+      "octets": 1897,
+      "sha256": "1470ff3334a3193bd340c13a9ad29279c46b9378254ca9a467c9124997d717e0"
+    },
+    {
+      "chemin": "Code_source/lib/cesi_grove/src/grove_rtc_ds1307.c",
+      "octets": 3234,
+      "sha256": "24c5aa326a2203187e647eb9a690ae8bc8957c0006bb6e1c7565680e16afef72"
+    },
+    {
+      "chemin": "Code_source/lib/cesi_grove/src/sd_logger.c",
+      "octets": 14905,
+      "sha256": "475e046e82b7b719de40a54380196c9601347c6074778fefd7a0cec00b06b11c"
+    },
+    {
+      "chemin": "Code_source/lib/cesi_grove/src/sd_logger_file.c",
+      "octets": 1555,
+      "sha256": "b99792b5cb9ac7685b57024dc6c2d1fbe846f5d07ea24233929d64e1adae01b2"
+    },
+    {
+      "chemin": "Code_source/lib/fatfs/ORIGIN.txt",
+      "octets": 61,
+      "sha256": "e76b03af1177367019d06c1aee53d8fc6eb4af3ab06829438a9c802ccb5f4fb5"
+    },
+    {
+      "chemin": "Code_source/lib/fatfs/diskio.h",
+      "octets": 2733,
+      "sha256": "1c2b29f53e061c55d43b2e412c3a61320b2621bac7561a05e275514baa44785a"
+    },
+    {
+      "chemin": "Code_source/lib/fatfs/ff.c",
+      "octets": 267210,
+      "sha256": "ebe1f68592b3f51a9ee92dba97b5a0512fa61c48989b169fbe19e6071ffd6646"
+    },
+    {
+      "chemin": "Code_source/lib/fatfs/ff.h",
+      "octets": 17365,
+      "sha256": "42920ae4d6080bfc2a72d92a9969b5e94eeaff070e5e71d90da9ab6d7d8e158e"
+    },
+    {
+      "chemin": "Code_source/lib/fatfs/ffconf.h",
+      "octets": 12426,
+      "sha256": "c24b71f258ac01a304b2f9f57ce3c61258149fb662ec750e4f19bf7294c25475"
+    },
+    {
+      "chemin": "Code_source/lib/fatfs/ffunicode.c",
+      "octets": 1355839,
+      "sha256": "86cd4710c0968f0335e631ad440f90f5d3e92aa10d9bac6981533a32fd8e87c2"
+    },
+    {
+      "chemin": "Code_source/lib/library.json",
+      "octets": 188,
+      "sha256": "011ec23350e43734903ee0302d718743742e1c5f1e025f2cdd20750884aae153"
+    },
+    {
+      "chemin": "Code_source/linker.ld",
+      "octets": 2005,
+      "sha256": "3469f34eedf50b9fc2d114a8b23eb4f3aa90943a89807ea283772530cbbde6e0"
+    },
+    {
+      "chemin": "Code_source/platformio.ini",
+      "octets": 918,
+      "sha256": "4346447769c8c6fe067da9b7aa16f891689b3fc0d91873494b8a06233480767a"
+    },
+    {
+      "chemin": "Code_source/scripts/build_direct.py",
+      "octets": 3071,
+      "sha256": "e6e2ffbef0130dc17951a32519f550c508f8aed92d6a0a678efdf8a3dadaad9c"
+    },
+    {
+      "chemin": "Code_source/scripts/test_host.sh",
+      "octets": 1263,
+      "sha256": "996a816b7a392b857ab18770c4b0923720c6bc7c05ea94c690082717daa64a1a"
+    },
+    {
+      "chemin": "Code_source/scripts/upload_bin.sh",
+      "octets": 854,
+      "sha256": "1a6e336165c444a223ff1a470e8cf6de53fa751afd6af40a53994974e29c0607"
+    },
+    {
+      "chemin": "Code_source/src/app.c",
+      "octets": 31030,
+      "sha256": "71445bbac60e476fddb84f723ebfb5a2472a06e5b4ff7b24fe6be0c08eafebf7"
+    },
+    {
+      "chemin": "Code_source/src/config.c",
+      "octets": 6691,
+      "sha256": "8836f5d1bd8ac518472b3de597d3259d21e7dc4b96433d2114ea6a51ae13c08a"
+    },
+    {
+      "chemin": "Code_source/src/diskio_spi.c",
+      "octets": 8373,
+      "sha256": "3f8da6df01ade9b985b2d3081a4c46faa0c70b73a2eb0f6899385a6dad9712f5"
+    },
+    {
+      "chemin": "Code_source/src/environment.c",
+      "octets": 1219,
+      "sha256": "00890ea3c985c907151641e5370ebb0b18b64de3904e0abaa054d54f50ce27ed"
+    },
+    {
+      "chemin": "Code_source/src/format.c",
+      "octets": 2690,
+      "sha256": "9bf8c9fb36e2a3ce01979ff20b10668d1bddbceaff30598f5a7b7b75000a8573"
+    },
+    {
+      "chemin": "Code_source/src/gps.c",
+      "octets": 1723,
+      "sha256": "3db2ddf890b897e9aabd7c4b78c90739f9d1b97b614c4b9140b278152a027d6c"
+    },
+    {
+      "chemin": "Code_source/src/main.c",
+      "octets": 1138,
+      "sha256": "36f52af504a70aa1823f6e1e1a1abb7e4d35d15cae23ce43cd0d71b33b0cca71"
+    },
+    {
+      "chemin": "Code_source/src/nv_store.c",
+      "octets": 3902,
+      "sha256": "3ae2003d38d26fd50099478d014e36f3dc829c249b059af37bc7df3b19ae258e"
+    },
+    {
+      "chemin": "Code_source/src/setup.c",
+      "octets": 11264,
+      "sha256": "84b7b6f2a5f4fd9468e98a6da8c68134cf73f7d6dce93e24d5241b630c0f8b22"
+    },
+    {
+      "chemin": "Code_source/src/storage.c",
+      "octets": 6252,
+      "sha256": "a746936a2759b30a2a1eda25878268a7c2b0b8e31fcdc431c08aa3ea9fbb6a93"
+    },
+    {
+      "chemin": "Code_source/src/syscalls.c",
+      "octets": 3435,
+      "sha256": "9758e4b50bc731cf3b99c2fca2fc2e068f71c713db54039c99b8c892b998ae1b"
+    },
+    {
+      "chemin": "Code_source/src/time_service.c",
+      "octets": 2694,
+      "sha256": "b148fa4519d0f26c00a0231006e3761b90849d3a557cd71ba23716053bfad3d3"
+    },
+    {
+      "chemin": "Code_source/tests/app_mock/board.h",
+      "octets": 669,
+      "sha256": "1a15f3bc5b7c4489bb44e811ccaad599b52582e1b192b9c8c46feb290e13b95a"
+    },
+    {
+      "chemin": "Code_source/tests/mock/board.h",
+      "octets": 154,
+      "sha256": "b1454d66d791b0dc32883845c5b7bfd7fc6200391f19c79b16f44c08dd274cf3"
+    },
+    {
+      "chemin": "Code_source/tests/test_app.c",
+      "octets": 8944,
+      "sha256": "bbc27dd3974a0cd63acde204aad8dcf956204bd2043ea77a38f0d6a06f4b9cd2"
+    },
+    {
+      "chemin": "Code_source/tests/test_core.c",
+      "octets": 3509,
+      "sha256": "bc414464306566b6142d47f091d4a91f742126946ad0f0247d8c780aede0a011"
+    },
+    {
+      "chemin": "Code_source/tests/test_storage.c",
+      "octets": 3151,
+      "sha256": "ce496071e5c0dc369c9a6be3aa94a235b4b4f378f055c7c47bc1a0299c4d7e13"
+    },
+    {
+      "chemin": "Code_source/tools/station_dashboard.py",
+      "octets": 26755,
+      "sha256": "e10ef28683dc44c2b1733834b646a67d36155e5f3450cf3801fdbd46ac8c58bd"
+    },
+    {
+      "chemin": "Guide_utilisateur_Station_meteo.docx",
+      "octets": 123122,
+      "sha256": "7add7b11a06a951bb475816338060fd96e58e21bce77a1f2bb0a971abe444bef"
+    },
+    {
+      "chemin": "Guide_utilisateur_Station_meteo.pdf",
+      "octets": 279842,
+      "sha256": "847ab2aade722eb3c8b4df6111201791966d4922fcb6a3c778ee191c76ffdae0"
+    },
+    {
+      "chemin": "LIRE_AVANT_REMISE.txt",
+      "octets": 2433,
+      "sha256": "f2201b8fea2ba426093bac6b1c4c01a1b83e46f45dfa665185692cd61ac0eb65"
+    },
+    {
+      "chemin": "Livrable_4_Documentation.docx",
+      "octets": 512122,
+      "sha256": "ed044db05206f23bb8d7340ee6fceb25d9a3b8d6e59a652fce96282199da11ca"
+    },
+    {
+      "chemin": "Livrable_4_Documentation.pdf",
+      "octets": 765057,
+      "sha256": "85ec390d486c94dddbcf356e21e6bf84bca690b04ccf55c7be3ee8d4ba5aa09a"
+    },
+    {
+      "chemin": "VERIFICATIONS.txt",
+      "octets": 2212,
+      "sha256": "ad4199c29fe10e123cb191e10b8a34d6eb03f835d93ac5cadf42665f87348f08"
+    }
+  ]
+}

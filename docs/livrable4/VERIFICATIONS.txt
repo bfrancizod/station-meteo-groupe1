@@ -1,0 +1,37 @@
+VÉRIFICATIONS DE LA REMISE — 21 OCTOBRE 2026
+
+Source active : 6bc3343 — Ajoute un mode GPS de soutenance après 15 secondes.
+Version du firmware : WWW-G1-1.1.0. Aucun code actif modifié pendant cette rédaction.
+
+Commandes exécutées :
+1. ASAN_OPTIONS=detect_leaks=0 bash scripts/test_host.sh
+   Configuration, CRC, calendrier, NMEA, format : OK.
+   Intégration FatFs sur disque RAM, archives et reprise : OK.
+   Superviseur simulé, modes, GPS DEMO, priorité vraie position, autres défauts : OK.
+   Scénarios avec TIMEOUT=30 puis TIMEOUT=10 : OK.
+2. python3 tools/station_dashboard.py --self-test
+   Parseur, CSV et blocs lisibles, NA, unités, messages intercalés, marqueur DEMO : OK.
+3. /home/bfrancizod/.local/bin/pio run -e nucleo_l476rg
+   SUCCESS. RAM indiquée : 9 468 / 98 304 octets ; Flash : 64 872 / 1 048 576 octets.
+   Ces valeurs ne mesurent pas la marge de pile sur la maquette.
+
+Essais matériels antérieurs de la séance, non répétés pendant la rédaction :
+- Téléversement ST-LINK : Programming Finished, Verified OK, Resetting Target.
+- Remplacement GPS reçu environ 15 s après activation (14,914 s côté PC dans une trace).
+- CYCLE STANDARD SD=OK ; STATUS ERR=0x00 et GPS_DEMO=1.
+- Traces utilisateur montrant mesures environnementales et coordonnées DEMO puis NA
+  après désactivation/redémarrage, cohérent avec le caractère temporaire de l'option.
+
+Non attestés par ces vérifications : précision absolue, consommation et autonomie
+batterie, intégration d'une vraie position GGA dans le cycle réel, relecture physique
+complète du .LOG sur PC, validation électrique complète, endurance maritime.
+
+Contrôles documentaires :
+- Deux archives DOCX lisibles, relations internes et XML vérifiés.
+- Conversion LibreOffice en PDF : 19 pages pour le livrable, 7 pour le guide autonome.
+- Schémas et pages représentatives inspectés visuellement ; pas de débordement constaté.
+- Calculs 84/86 octets et limites FatFs recoupés avec le code et l'arithmétique.
+- ZIP contrôlé : aucun .git, .bak, cache ou binaire ancien inclus.
+
+Empreinte du binaire compilé, non joint au ZIP :
+82d9d5e7f95df216a9206eaae5a7897dadd6ecbd7105477fbedd850a0b6971fa  firmware.bin

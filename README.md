@@ -1,5 +1,8 @@
 # Worldwide Weather Watcher Groupe 1
 
+Pour comprendre les composants, les fichiers et les choix du programme, lire le
+[guide d'explication de la station](docs/COMPRENDRE_LA_STATION.md).
+
 Les commandes pour compiler, programmer la carte et ouvrir l'affichage sont
 regroupées dans la [fiche de lancement](LANCEMENT.md).
 
