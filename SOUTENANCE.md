@@ -1,95 +1,157 @@
-# Soutenance : commandes essentielles
+# Soutenance : compiler, téléverser et afficher les mesures
 
-Fiche pour ton PC actuel. Brancher la Nucleo sur le connecteur ST-LINK.
+Fiche pour ton PC Linux actuel. Suivre les étapes dans l’ordre.
+Les commandes utilisent le chemin complet de PlatformIO pour éviter
+« pio : commande introuvable ».
 
-**Commande pour ouvrir la console, taper `STATUS` et voir ce que tu tapes :**
+## 1. Ouvrir le projet
 
-```bash
-~/.platformio/penv/bin/pio device monitor -p /dev/ttyACM0 -b 115200 --echo
-```
-
-Fermer `cat`, les autres moniteurs et le tableau de bord avant de la lancer.
-
-## 1. Ouvrir le projet dans un terminal Linux
+Dans un terminal Linux :
 
 ```bash
 cd ~/projets/station-meteo-groupe1
 ```
 
-## 2. Afficher les textes de la carte dans la console
+Garder ce terminal ouvert pour la suite.
 
-Lancer la commande PlatformIO indiquée tout en haut de cette fiche.
-
-Cette console permet de lire les mesures **et de saisir des commandes**.
-L'option `--echo` affiche les caractères que tu tapes : c'est l'**écho local**.
-Par exemple, taper `STATUS` puis **Entrée** affiche l'état de la carte.
-`--echo` affiche ta saisie ; la réponse de la carte arrive ensuite.
-
-Autre méthode pour lire les textes : utiliser cette commande **à la place** du moniteur :
+## 2. Compiler le programme
 
 ```bash
-stty -F /dev/ttyACM0 115200 raw -echo && cat /dev/ttyACM0
+~/.platformio/penv/bin/pio run -e nucleo_l476rg
 ```
 
-Avec `cat`, la lecture seule reste active : pour envoyer `STATUS`, utiliser un
-deuxième terminal avec `printf 'STATUS\r\n' > /dev/ttyACM0`.
-Le `-echo` de `stty` concerne le port série ; il est différent de l'écho local du moniteur.
+Attendre **[SUCCESS]** avant de continuer. La compilation transforme le code C
+en programme utilisable par le STM32. **La carte peut être débranchée à cette étape.**
 
-## 3. Passer le GPS en démonstration
+## 3. Téléverser le programme sur la carte
 
-**Avec le moniteur PlatformIO** : saisir directement ces lignes dans le moniteur,
-chacune suivie d'Entrée :
+Brancher la Nucleo sur son connecteur **ST-LINK** avec le câble USB.
+Fermer le dashboard, `cat` et les moniteurs série avant le téléversement.
+
+```bash
+~/.platformio/penv/bin/pio run -e nucleo_l476rg -t upload
+```
+
+Attendre **[SUCCESS]**. Le programme est écrit dans la mémoire de la carte,
+puis la station redémarre. Ne maintenir aucun bouton rouge ou vert au démarrage
+pour partir en mode standard.
+
+## 4. Ouvrir la console et tester les commandes
+
+Dans le même terminal Linux :
+
+```bash
+~/.platformio/penv/bin/pio device monitor -p /dev/ttyACM0 -b 115200 --echo
+```
+
+`--echo` permet de voir les caractères que tu tapes.
+Un seul lecteur doit utiliser le port série : laisser le dashboard fermé.
+
+**À partir de maintenant, taper les commandes suivantes dans le moniteur,
+avec Entrée après chaque ligne :**
+
+```text
+STATUS
+SHOW
+```
+
+- `STATUS` affiche le mode, les défauts, l’état de la RTC et l’option GPS de démonstration.
+- `SHOW` affiche les paramètres réellement utilisés par la station.
+- `HELP` permet de retrouver les autres commandes.
+
+### Activer le GPS de démonstration pour une présentation en intérieur
+
+Toujours dans le moniteur :
 
 ```text
 GPS_DEMO=1
 STATUS
 ```
 
-**Avec `cat`** : laisser l'affichage ouvert et envoyer l'activation depuis
-**un deuxième terminal Linux** :
+Vérifier que `STATUS` indique `GPS_DEMO=1`. Cette option fonctionne aussi en maintenance.
+Pendant une acquisition, après **15 secondes sans position GPS valide**, le
+programme utilise `0,0 (DEMO)`. Les autres capteurs restent réels.
+Le défaut GPS peut alors disparaître ; les autres défauts restent signalés.
 
-```bash
-printf 'GPS_DEMO=1\r\nSTATUS\r\n' > /dev/ttyACM0
-```
+**Après un téléversement, RESET ou débranchement, il faut renvoyer `GPS_DEMO=1`.**
+Le nom de la commande est `GPS_DEMO`, pas `GPS_MODE`.
 
-- `GPS_DEMO=1` : après 15 s sans position, utiliser `0,0 (DEMO)` et effacer le défaut GPS.
-- `STATUS` : vérifier `GPS_DEMO=1` ; `ERR=0x00` signifie qu'aucun défaut n'est signalé.
-- Les autres capteurs restent réels et leurs défauts restent signalés.
+### Afficher les mesures détaillées dans le terminal
 
-**Après RESET ou débranchement, refaire cette activation.**
+Depuis le mode **standard**, maintenir le **bouton rouge pendant 5 secondes**,
+puis le relâcher. Attendre le message **MODE MAINTENANCE**.
 
-## 4. Voir d'abord les mesures dans la console
+Si la station est en mode économique, un premier appui rouge de 5 secondes
+revient au standard ; un nouvel appui rouge de 5 secondes entre en maintenance.
 
-Depuis le mode standard, maintenir le **bouton rouge 5 secondes**, puis le relâcher :
-la station passe en maintenance. Attendre environ **15 secondes** pour les mesures.
-La LED est orange fixe si aucun défaut n'est présent.
+En maintenance, les mesures s’affichent automatiquement : date, température,
+humidité, pression, luminosité, latitude et longitude.
+Avec le GPS de démonstration sans réception satellite, prévoir environ
+**16 secondes entre deux acquisitions complètes**.
 
-Le terminal affiche la date, la température, l'humidité, la pression, la luminosité,
-puis les coordonnées GPS. Sans position satellite, elles deviennent :
+Exemple pour les coordonnées remplacées :
 
 ```text
 Latitude     : 0.000000 (DEMO)
 Longitude    : 0.000000 (DEMO)
 ```
 
-## 5. Passer ensuite à l'affichage graphique
+Masquer puis découvrir le capteur de lumière entre deux acquisitions pour montrer
+une variation. La LED est orange fixe en maintenance si aucun défaut n’est présent.
+Taper `STATUS` pour vérifier l’état ; `ERR=0x00` signifie qu’aucun défaut n’est signalé.
 
-Quitter le moniteur ou `cat` avec **Ctrl+C** pour libérer le port,
-puis lancer dans le terminal Linux ouvert dans le dossier du projet :
+## 5. Passer à l’interface graphique
+
+1. Quitter le moniteur avec **Ctrl+C** pour libérer le port série.
+2. Laisser la carte branchée et en **maintenance** : ne pas appuyer sur RESET.
+3. Dans le terminal Linux, toujours à la racine du projet, lancer :
 
 ```bash
 /usr/bin/python tools/station_dashboard.py
 ```
 
-Choisir `/dev/ttyACM0`, cliquer sur **Connecter** et attendre les mesures.
-**Ne pas appuyer sur RESET entre l'activation du GPS de soutenance et les courbes.**
+Dans la fenêtre :
 
-## Si le programme doit être mis à jour avant la présentation
+1. Choisir **/dev/ttyACM0** dans la liste des ports ; cliquer sur **Actualiser** si nécessaire.
+2. Cliquer sur **Connecter**.
+3. Attendre une acquisition complète : les valeurs et les courbes apparaissent.
+4. Utiliser **Exporter CSV** pour enregistrer sur le PC les mesures reçues pendant la session.
 
-Fermer la console et le tableau de bord. Compiler et envoyer le code sur la carte :
+L’interface est créée par `tools/station_dashboard.py`. Elle reçoit les données de
+la carte par USB série. La maintenance envoie les blocs détaillés nécessaires aux
+courbes ; en standard et en économie, les mesures sont enregistrées sur SD et la
+console affiche surtout les bilans.
+
+## 6. Si quelque chose ne fonctionne pas
+
+| Problème | Action |
+|---|---|
+| `pio : commande introuvable` | Utiliser le chemin complet `~/.platformio/penv/bin/pio` indiqué dans cette fiche. |
+| `/dev/ttyACM0` absent ou incorrect | Vérifier le branchement ST-LINK et lister les ports avec la commande ci-dessous. Adapter le port dans le moniteur et le dashboard. |
+| Port occupé ou affichage incomplet | Fermer les autres lecteurs du port : moniteur, `cat`, miniterm ou dashboard. |
+| L’interface s’ouvre mais aucune mesure n’arrive | Vérifier la connexion et le mode maintenance. Attendre un cycle complet. |
+| Le GPS affiche `NA` après un redémarrage | Revenir dans le moniteur et réactiver `GPS_DEMO=1`, puis reprendre l’étape 5. |
+| La LED clignote encore avec GPS DEMO | Lire `STATUS` : un autre défaut peut être présent. |
+
+Pour lister les ports, dans un terminal Linux :
 
 ```bash
-~/.platformio/penv/bin/pio run -e nucleo_l476rg -t upload
+~/.platformio/penv/bin/pio device list
 ```
 
-Puis reprendre à l'étape 2. Pour les autres commandes : voir [LANCEMENT.md](LANCEMENT.md).
+Pour tester uniquement l’interface **sans carte**, avec des mesures entièrement
+fictives, fermer l’interface précédente puis lancer :
+
+```bash
+/usr/bin/python tools/station_dashboard.py --demo
+```
+
+Ce mode simule toutes les données sur le PC. Il est différent de `GPS_DEMO=1`,
+qui remplace uniquement la position GPS sur la carte.
+
+## 7. Terminer la démonstration
+
+En maintenance, attendre **« SD liberee : retrait autorise. »** avant de retirer
+la SD ou de couper l’alimentation. Fermer le dashboard, puis débrancher la carte.
+
+Pour l’installation des outils et les autres commandes : voir [LANCEMENT.md](LANCEMENT.md).
