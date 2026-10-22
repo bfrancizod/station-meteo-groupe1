@@ -1,0 +1,106 @@
+STATION MÉTÉO — COMMANDES À UTILISER DANS L'ORDRE
+
+Brancher la Nucleo sur ST-LINK. Un seul lecteur du port série à la fois.
+Adapter /dev/ttyACM0 si la carte utilise un autre port.
+
+1. OUVRIR LE PROJET — dans le terminal Linux
+
+cd ~/projets/station-meteo-groupe1
+
+2. COMPILER — attendre [SUCCESS]
+
+~/.platformio/penv/bin/pio run -e nucleo_l476rg
+
+3. TÉLÉVERSER — fermer les consoles et le dashboard, attendre [SUCCESS]
+
+~/.platformio/penv/bin/pio run -e nucleo_l476rg -t upload
+
+4. OUVRIR LA CONSOLE — --echo affiche ce que tu tapes
+
+~/.platformio/penv/bin/pio device monitor -p /dev/ttyACM0 -b 115200 --echo
+
+5. TESTER — taper DANS LE MONITEUR, puis Entrée après chaque commande
+
+HELP        : liste des commandes
+STATUS      : mode, défauts, RTC et état GPS_DEMO
+SHOW        : réglages réellement utilisés
+VERSION     : version du programme et numéro de lot
+I2C         : détection RTC (68) et BME280 (76 ou 77)
+MEASURE     : demander une acquisition si aucun cycle n'est déjà en cours
+
+Taper seulement le mot avant les deux-points. MEASURE est refusé en configuration.
+En standard, MEASURE affiche surtout le bilan SD, pas les valeurs détaillées.
+
+6. MAINTENANCE ET GPS — pour voir les mesures détaillées
+
+Depuis standard : maintenir ROUGE 5 secondes puis relâcher.
+Attendre MODE MAINTENANCE. La LED est orange fixe si aucun défaut n'est présent.
+
+Dans le moniteur, activer le remplacement GPS pour la soutenance :
+GPS_DEMO=1
+
+Attendre environ 15 secondes sans position, puis taper :
+STATUS
+
+Vérifier GPS_DEMO=1 et, si tout est résolu, ERR=0x00.
+Les coordonnées deviennent 0.000000 (DEMO) ; les autres mesures restent réelles.
+Masquer puis découvrir le capteur de lumière entre deux acquisitions pour le tester.
+
+Pour utiliser uniquement le vrai GPS :
+GPS_DEMO=0
+
+GPS_DEMO=0 ne désactive PAS le GPS. Sans position satellite valide, il affiche NA.
+RESET ou débranchement annule GPS_DEMO=1 : le réactiver après le redémarrage.
+Le passage en maintenance ne l'annule pas. Le nom est GPS_DEMO, pas GPS_MODE.
+
+7. CONFIGURATION — seulement si tu veux modifier les réglages
+
+Maintenir ROUGE pendant une pression sur RESET, puis relâcher.
+Vérifier MODE=CONFIGURATION avec STATUS.
+Dans le moniteur, exemple de réglages persistants pour les essais :
+
+LOG_INTERVAL=1
+TIMEOUT=10
+FILE_MAX_SIZE=512
+SHOW
+
+Pour régler la RTC, saisir la vraie date puis la vraie heure.
+Formats : DATE=MM,JJ,AAAA et CLOCK=HH:MM:SS ; exemple À ADAPTER :
+DATE=10,22,2026
+CLOCK=14:30:00
+DAY=THU
+
+RESET saisi dans le moniteur restaure les paramètres par défaut.
+Le BOUTON RESET redémarre la carte : ce sont deux actions différentes.
+Pour sortir : bouton RESET sans maintenir ROUGE, puis reprendre l'étape 6.
+
+8. DASHBOARD — à lancer APRÈS le test dans la console
+
+Quitter le moniteur avec Ctrl+C pour libérer le port.
+Ne pas redémarrer ni débrancher la carte après l'activation de GPS_DEMO.
+Dans le terminal Linux, depuis le dossier du projet :
+
+/usr/bin/python tools/station_dashboard.py
+
+Choisir /dev/ttyACM0, cliquer sur Connecter et attendre une acquisition complète.
+La carte doit rester en maintenance. Avec GPS DEMO, prévoir environ 16 s par point.
+
+9. AUTRE MÉTHODE POUR LIRE LA CONSOLE — à la place du moniteur et du dashboard
+
+stty -F /dev/ttyACM0 115200 raw -echo && cat /dev/ttyACM0
+
+cat lit seulement. Pour envoyer une commande, ouvrir un DEUXIÈME terminal :
+printf 'GPS_DEMO=1\r\nSTATUS\r\n' > /dev/ttyACM0
+
+Ctrl+C arrête cat. Ne pas lancer un autre lecteur tant que cat est ouvert.
+
+10. TESTS LOGICIELS SUR PC — facultatifs avant la présentation
+
+ASAN_OPTIONS=detect_leaks=0 bash scripts/test_host.sh
+/usr/bin/python tools/station_dashboard.py --self-test
+
+Simulation graphique SANS CARTE, avec toutes les données fictives :
+/usr/bin/python tools/station_dashboard.py --demo
+
+Pour arrêter : passer en maintenance et attendre « SD liberee » avant retrait SD
+ou coupure d'alimentation ; fermer ensuite la console ou le dashboard.
